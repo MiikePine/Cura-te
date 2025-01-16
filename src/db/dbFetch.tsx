@@ -1,36 +1,60 @@
-import { supabase } from './supabase';
+import { supabase } from './supabase';  // A importação do seu cliente Supabase
 
-// Function to fetch therapists with "Shamanic Journeying" in specialties
-export const fetchShamanicTherapists = async () => {
+// Função para registro de usuário
+export async function signupWithEmail(email: string, password: string) {
   try {
-    // Realizando a consulta para terapeutas e suas especialidades
-    const { data, error } = await supabase
-      .from('specialties')
-      .select('therapist_id, name')  // Seleciona o ID do terapeuta e o nome da especialidade
-      .in('name', ['Shamanic Journeying', 'Ancestral Healing', 'Soul Recovery']); // Filtra as especialidades
+    const { user, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
     if (error) {
-      console.error('Erro ao buscar terapeutas shamanic:', error.message);
-      return { data: null, error };
+      console.error("Erro no signup:", error.message);
+
+      throw error;
     }
 
-    // Coletando os IDs dos terapeutas com essas especialidades
-    const therapistIds = data.map(item => item.therapist_id);
+    return user; // Retorna o usuário registrado
+  } catch (error: any) {
+    console.error("Erro inesperado ao tentar registrar:", error.message);
 
-    // Buscando os terapeutas com base nos IDs coletados
-    const { data: therapistsData, error: therapistsError } = await supabase
-      .from('therapists')
-      .select('*')
-      .in('id', therapistIds);  // Filtra terapeutas que possuem as especialidades selecionadas
+    return { error: error.message };
+  }
+}
 
-    if (therapistsError) {
-      console.error('Erro ao buscar terapeutas:', therapistsError.message);
-      return { data: null, error: therapistsError };
+// Função para login com email e senha
+export async function loginWithEmail(email: string, password: string) {
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw error;
     }
 
-    return { data: therapistsData, error: null };
+    return data;
+  } catch (error: any) {
+    return { error: error.message };
+  }
+}
+
+// Função para adicionar vendedor
+export const addSeller = async (name: string, email: string, availability: any) => {
+  try {
+    const { data, error } = await supabase
+      .from('seller')
+      .insert([{ name, email, availability }]);
+
+    if (error) {
+      console.error("Erro ao adicionar vendedor:", error.message);
+      throw new Error(error.message);
+    }
+
+    return data; // Dados retornados do Supabase, se necessário
   } catch (error) {
-    console.error('Erro ao buscar terapeutas shamanic:', error);
-    return { data: null, error };
+    console.error("Erro inesperado ao adicionar vendedor:", error);
+    throw new Error('Erro ao adicionar vendedor');
   }
 };

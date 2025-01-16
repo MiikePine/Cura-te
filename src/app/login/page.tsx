@@ -1,83 +1,61 @@
 "use client";
 
 import React, { useState } from "react";
-import { supabase } from "../../db/supabase";
-import { useDispatch } from "react-redux";
-import { loginSuccess } from "../../redux/slices/authSlice";
 import Link from "next/link";
-import Image from "next/image";
 import { Lock, User, ArrowRight } from "lucide-react";
+import { loginWithEmail } from "@terapias/db/dbFetch";
+import { useRouter } from "next/navigation"; // Importar useRouter
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+const router = useRouter()
+  
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage("");
 
-    if (!email || !password) {
-      setErrorMessage("Por favor, preencha todos os campos.");
-      setIsLoading(false);
-      return;
+    const response = await loginWithEmail(email, password);
+
+    setIsLoading(false);
+
+    if (response.error) {
+      setErrorMessage(response.error);
+    } else {
+      router.push("/");
+
+      // Redirecionar ou tomar uma ação após o login bem-sucedido
+      console.log("Login successful:", response);
+      // Por exemplo: window.location.href = "/dashboard";
     }
-
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        setErrorMessage(error.message);
-        return;
-      }
-
-      if (data?.user) {
-        dispatch(
-          loginSuccess({
-            id: data.user.id,
-            email: data.user.email!,
-            price: data.user.price
-          })
-        );
-      }
-    } catch (error) {
-      setErrorMessage("Erro ao tentar fazer login.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F8F5F1] to-[#E8DED1]">
       <div className="relative min-h-screen flex items-center justify-center">
-        {/* Background Pattern */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#7C9A92]/10 to-[#4A6670]/10 pattern-grid-lg opacity-30" />
-        
+
         <div className="relative w-full max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center gap-12">
-          {/* Left Side - Hero Content */}
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-4xl md:text-6xl font-bold text-[#4A6670] mb-6 leading-tight">
               Bem-vindo de volta à sua
               <span className="text-[#7C9A92] block">jornada de bem-estar</span>
             </h1>
             <p className="text-lg text-gray-600 md:max-w-md">
-              Continue sua jornada para uma vida mais saudável e equilibrada. Estamos aqui para apoiar cada passo seu.
+              Continue sua jornada para uma vida mais saudável e equilibrada.
+              Estamos aqui para apoiar cada passo seu.
             </p>
           </div>
 
-          {/* Right Side - Login Form */}
           <div className="w-full md:w-[450px]">
             <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl">
               <h2 className="text-2xl font-semibold text-[#4A6670] mb-6">Login</h2>
-              
               <form onSubmit={handleLogin} className="space-y-6">
                 <div className="space-y-4">
-                  {/* Email Input */}
                   <div className="relative group">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#7C9A92] transition-colors group-focus-within:text-[#4A6670]" />
                     <input
@@ -89,7 +67,6 @@ export default function Login() {
                     />
                   </div>
 
-                  {/* Password Input */}
                   <div className="relative group">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#7C9A92] transition-colors group-focus-within:text-[#4A6670]" />
                     <input
@@ -102,14 +79,12 @@ export default function Login() {
                   </div>
                 </div>
 
-                {/* Error Message */}
                 {errorMessage && (
                   <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
                     {errorMessage}
                   </div>
                 )}
 
-                {/* Login Button */}
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -125,11 +100,10 @@ export default function Login() {
                   )}
                 </button>
 
-                {/* Register Link */}
                 <p className="text-center text-[#4A6670]/80 mt-6">
-                  Não tem uma conta?{' '}
-                  <Link 
-                    href="/register" 
+                  Não tem uma conta?{" "}
+                  <Link
+                    href="/register"
                     className="text-[#7C9A92] hover:text-[#4A6670] font-medium transition-colors"
                   >
                     Registre-se aqui
