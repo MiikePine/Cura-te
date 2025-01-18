@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search, ArrowRight, Shield, Star, Heart,
   Users, Calendar, MessageSquare, CheckCircle,
@@ -9,6 +9,37 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { supabase } from '@terapias/db/supabase';
+import UserCard from '@terapias/components/userCard';
+
+interface Seller {
+  userUID: number;
+  name: string;
+  email: string;
+  title: string;
+  image: string;
+  rating: number;
+  reviews: number;
+  location: string;
+  languages: string[];
+  experience: string;
+  specialties: string[];
+  certifications: string[];
+  availability: string[];
+  price: string;
+  bio: string;
+  teachingStyle: string;
+  nextAvailable: string;
+  verified: boolean;
+  featured: boolean;
+  studentCount: number;
+  sessionTypes: {
+    name: string;
+    duration: string;
+    price: string;
+    description: string;
+  }[];
+}
 
 const categories = [
   {
@@ -49,56 +80,7 @@ const categories = [
   }
 ];
 
-const featuredPractitioners = [
-  {
-    id: 1,
-    name: 'Dr. Sarah Chen',
-    profession: 'Integrative Medicine Practitioner',
-    image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80',
-    rating: 4.9,
-    reviews: 128,
-    verified: true,
-    branch: ['Acupuncture', 'Herbal Medicine, Reiki'],
-    price: 'From $120/session',
-    yearsExperience: 15,
-    languages: ['English', 'Mandarin'],
-    specialties: ['Chronic Pain', 'Stress Management'],
-    nextAvailable: '2 days',
-    location: 'Vancouver, BC'
-  },
-  {
-    id: 2,
-    name: 'Michael Rivers',
-    profession: 'Shamanic Healer',
-    image: 'https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&q=80',
-    rating: 5.0,
-    reviews: 89,
-    verified: true,
-    branch: ['Energy Work', 'Spiritual Counseling'],
-    price: 'From $150/session',
-    yearsExperience: 20,
-    languages: ['English', 'Spanish'],
-    specialties: ['Soul Retrieval', 'Energy Clearing'],
-    nextAvailable: 'Tomorrow',
-    location: 'Sedona, AZ'
-  },
-  {
-    id: 3,
-    name: 'Dr. Amara Patel',
-    profession: 'Ayurvedic Doctor',
-    image: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&q=80',
-    rating: 4.8,
-    reviews: 156,
-    verified: true,
-    branch: ['Ayurveda', 'Nutrition'],
-    price: 'From $100/session',
-    yearsExperience: 12,
-    languages: ['English', 'Hindi'],
-    specialties: ['Digestive Health', 'Women\'s Wellness'],
-    nextAvailable: '3 days',
-    location: 'Toronto, ON'
-  }
-];
+
 
 const testimonials = [
   {
@@ -136,6 +118,29 @@ const stats = [
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
+    const [sellers, setSellers] = useState<Seller[]>([]);
+  
+     useEffect(() => {
+        const fetchSellers = async () => {
+          try {
+            const { data, error } = await supabase
+            .from("seller")
+            .select("*")
+      console.log("perfis,", data)
+            if (error) {
+              console.error("Error fetching sellers:", error.message, error.details);
+              return;
+            }
+      
+            setSellers(data || []);
+          } catch (err) {
+            console.error("Unexpected error fetching sellers:", err);
+          }
+        };
+      
+        fetchSellers();
+      }, []); 
+    
 
   const renderHowItWorks = () => (
     <section className="py-16 bg-white">
@@ -196,10 +201,12 @@ export default function Home() {
               </div>
               <p className="text-[#4A6670] mb-6">"{testimonial.content}"</p>
               <div className="flex items-center">
-                <img
-                  src={testimonial.image}
+                <Image
+                  src={testimonial.image || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80'}
                   alt={testimonial.author}
                   className="w-12 h-12 rounded-full object-cover mr-4"
+                  width={150}
+                  height={150}
                 />
                 <div>
                   <p className="font-semibold text-[#4A6670]">{testimonial.author}</p>
@@ -231,76 +238,7 @@ export default function Home() {
     </section>
   );
 
-  const renderPractitionerCard = (practitioner: any) => (
-    <div key={practitioner.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
-      <div className="relative">
-        <Image
-          src={practitioner.image}
-          alt={practitioner.name}
-          width={400}
-          height={200}
-          className="w-full h-48 object-cover"
-        />
-        {practitioner.verified && (
-          <div className="absolute top-4 right-4 bg-[#7C9A92]/90 text-white px-3 py-1 rounded-full text-sm flex items-center">
-            <Shield className="h-4 w-4 mr-1" />
-            Verified
-          </div>
-        )}
-      </div>
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div>
-            <h3 className="text-xl font-semibold text-[#4A6670]">{practitioner.name}</h3>
-            <p className="text-[#7C9A92]">{practitioner.profession}</p>
-          </div>
-          <div className="flex items-center">
-            <Star className="h-5 w-5 text-[#E6B17E]" />
-            <span className="ml-1 text-[#4A6670]">{practitioner.rating}</span>
-            <span className="ml-1 text-[#7C9A92]">({practitioner.reviews})</span>
-          </div>
-        </div>
-        
-        <div className="space-y-3 mb-4">
-          <div className="flex items-center text-sm text-[#4A6670]">
-            <MapPin className="h-4 w-4 mr-2 text-[#7C9A92]" />
-            {practitioner.location}
-          </div>
-          <div className="flex items-center text-sm text-[#4A6670]">
-            <Clock className="h-4 w-4 mr-2 text-[#7C9A92]" />
-            Next available: {practitioner.nextAvailable}
-          </div>
-          <div className="flex items-center text-sm text-[#4A6670]">
-            <Award className="h-4 w-4 mr-2 text-[#7C9A92]" />
-            {practitioner.yearsExperience} years experience
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-2 mb-4">
-          {practitioner.specialties.map((specialty: string, index: number) => (
-            <span
-              key={index}
-              className="bg-[#F8F5F1] text-[#7C9A92] px-3 py-1 rounded-full text-sm"
-            >
-              {specialty}
-            </span>
-          ))}
-        </div>
-
-        <div className="flex justify-between items-center mt-4">
-          <span className="text-[#4A6670] font-semibold">{practitioner.price}</span>
-          <div className="space-x-2">
-            <button className="bg-white border border-[#7C9A92] text-[#7C9A92] px-4 py-2 rounded-lg hover:bg-[#F8F5F1] transition-colors">
-              View Profile
-            </button>
-            <button className="bg-[#7C9A92] text-white px-4 py-2 rounded-lg hover:bg-[#6A8B83] transition-colors">
-              Book Now
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+ 
 
   return (
     <div className="min-h-screen bg-[#F8F5F1]">
@@ -383,9 +321,30 @@ export default function Home() {
               View All <ArrowRight className="h-4 w-4 ml-1" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredPractitioners.map(renderPractitionerCard)}
-          </div>
+         
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {sellers.map((seller) => (
+      <UserCard
+        key={seller.userUID}
+        userUID={seller.userUID}
+        name={seller.name}
+        title={seller.title}
+        image={seller.image}
+        rating={seller.rating}
+        reviews={seller.reviews}
+        location={seller.location}
+        experience={seller.experience}
+        studentCount={seller.studentCount}
+        nextAvailable={seller.nextAvailable}
+        specialties={seller.specialties}
+        price={seller.price}
+        verified={seller.verified}
+        featured={seller.featured}
+      />
+    ))}
+  </div>
+</div>  
         </div>
       </div>
 

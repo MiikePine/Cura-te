@@ -4,8 +4,9 @@
 import React, { useState } from 'react';
 import {
   Calendar, MapPin, Clock, Users, Filter,
-  Tag, ChevronRight, Search, Heart, Share2
+  Tag, Search, Heart, Share2
 } from 'lucide-react';
+import Image from 'next/image';
 
 interface Event {
   id: number;
@@ -126,10 +127,12 @@ export default function Events() {
   const renderEventCard = (event: Event) => (
     <div key={event.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
       <div className="relative">
-        <img
+        <Image
           src={event.image}
           alt={event.title}
           className="w-full h-48 object-cover"
+          width={150}
+          height={150}
         />
         <div className="absolute top-4 left-4">
           <span className="px-3 py-1 bg-white/90 rounded-full text-sm text-[#7C9A92] flex items-center">
@@ -181,10 +184,12 @@ export default function Events() {
         <div className="border-t border-[#E8DED1] pt-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <img
+              <Image
                 src={event.teacher.image}
                 alt={event.teacher.name}
                 className="w-10 h-10 rounded-full object-cover"
+                width={150}
+                height={150}
               />
               <div>
                 <p className="font-medium text-[#4A6670]">{event.teacher.name}</p>
@@ -216,10 +221,12 @@ export default function Events() {
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white overflow-hidden">
         <div className="absolute inset-0">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&q=80"
             alt="Events Background"
             className="w-full h-full object-cover opacity-10"
+            width={150}
+            height={150}
           />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">

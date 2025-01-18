@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Search, Tag, Clock, ChevronRight, BookOpen } from 'lucide-react';
+import Image from 'next/image';
 
 interface BlogPost {
   id: number;
@@ -114,10 +115,12 @@ export default function Blog() {
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white py-16">
         <div className="absolute inset-0">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1528715471579-d1bcf0ba5e83?auto=format&fit=crop&q=80"
             alt="Blog Hero"
             className="w-full h-full object-cover opacity-10"
+            width={150}
+            height={150}
           />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -174,10 +177,12 @@ export default function Blog() {
             {featuredPosts.map((post) => (
               <article key={post.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div className="relative h-64">
-                  <img
+                  <Image
                     src={post.image}
                     alt={post.title}
                     className="w-full h-full object-cover"
+                    width={150}
+                    height={150}
                   />
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-white/90 rounded-full text-sm text-[#7C9A92] flex items-center">
@@ -193,10 +198,12 @@ export default function Blog() {
                   <p className="text-[#7C9A92] mb-4">{post.excerpt}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <img
+                      <Image
                         src={post.author.avatar}
                         alt={post.author.name}
                         className="w-10 h-10 rounded-full object-cover"
+                        width={150}
+                        height={150}
                       />
                       <div>
                         <p className="font-medium text-[#4A6670]">{post.author.name}</p>
@@ -221,10 +228,12 @@ export default function Blog() {
             {recentPosts.map((post) => (
               <article key={post.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div className="relative h-48">
-                  <img
+                  <Image
                     src={post.image}
                     alt={post.title}
                     className="w-full h-full object-cover"
+                    width={150}
+                    height={150}
                   />
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-white/90 rounded-full text-sm text-[#7C9A92] flex items-center">
@@ -240,10 +249,12 @@ export default function Blog() {
                   <p className="text-[#7C9A92] text-sm mb-4">{post.excerpt}</p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <img
+                      <Image
                         src={post.author.avatar}
                         alt={post.author.name}
                         className="w-8 h-8 rounded-full object-cover"
+                        width={150}
+                        height={150}
                       />
                       <div>
                         <p className="text-sm font-medium text-[#4A6670]">{post.author.name}</p>

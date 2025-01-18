@@ -8,30 +8,35 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../../db/supabase';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 interface Seller {
-  id: number;
+  userUID: number;
   name: string;
-  branch: string;
   email: string;
+  branch: string;
   coverImage?: string;
   image?: string;
   title?: string;
   location?: string;
+  specialties?: string;
+  language?: string;
+
 }
-
 export default function SellerProfile() {
-  const [seller, setSeller] = useState<Seller | null>(null);
-  const [loading, setLoading] = useState(true);
-  const params = useParams();
 
-   
+
+const [seller, setSeller] = useState<Seller | null>(null);
+const [loading, setLoading] = useState(true);
+const params = useParams();
+const router = useRouter();
+  const { id } = router.query;
+
+
   useEffect(() => {
     const fetchSeller = async () => {
-      const name = params.name;
-
-      if (!name) {
-        console.error("No seller name in URL");
+      if (!id) {
+        console.error("No seller email in URL");
         setLoading(false);
         return;
       }
@@ -40,12 +45,12 @@ export default function SellerProfile() {
         const { data, error } = await supabase
           .from("seller")
           .select("*")
-          .eq("name", name);
+          .eq("id", id);
 
         if (error) {
           console.error("Error fetching seller:", error.message);
         } else if (data.length === 0) {
-          console.warn("No seller found with the specified name.");
+          console.warn("No seller found with the specified email.");
         } else {
           setSeller(data[0]);
         }
@@ -57,10 +62,11 @@ export default function SellerProfile() {
     };
 
     fetchSeller();
-  }, [params.name]);
+  }, [id]);
 
   if (loading) return <div>Loading...</div>;
   if (!seller) return <div>No seller data found</div>;
+
 
 
   return (
@@ -78,7 +84,7 @@ export default function SellerProfile() {
           <div className="relative">
           {seller.image ? (
   <Image
-    src={seller.image}
+    src={seller.image || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80'}
     alt={seller.location || "Profile picture"}
     width={150}
     height={150}
@@ -142,19 +148,20 @@ export default function SellerProfile() {
 
             {/* Specialties */}
             <div className="bg-white rounded-xl p-8 shadow-sm">
-              <h2 className="text-2xl font-bold text-[#4A6670] mb-6">Specialties</h2>
-              <div className="flex flex-wrap gap-3">
-               
-                  <span
-                   
-                    className="bg-[#F8F5F1] text-[#7C9A92] px-4 py-2 rounded-full text-sm flex items-center"
-                  >
-                    <Feather className="h-4 w-4 mr-2" />
-                   {seller.branch}
-                  </span>
-              
-              </div>
-            </div>
+      <h2 className="text-2xl font-bold text-[#4A6670] mb-6">Specialties</h2>
+      <div className="flex flex-wrap gap-3">
+        {/* Verificação se specialties é um array e renderização condicional */}
+        {Array.isArray(seller.specialties) && seller.specialties.map((specialty, index) => (
+          <span
+            key={index}
+            className="bg-[#F8F5F1] text-[#7C9A92] px-4 py-2 rounded-full text-sm flex items-center"
+          >
+            <Feather className="h-4 w-4 mr-2" />
+            {specialty}
+          </span>
+        ))}
+      </div>
+    </div>
 
             {/* Session Types */}
             <div className="bg-white rounded-xl p-8 shadow-sm">
@@ -218,7 +225,7 @@ export default function SellerProfile() {
                 </div>
                 <div className="flex items-center">
                   <Languages className="h-5 w-5 text-[#7C9A92] mr-3" />
-                  <span className="text-[#7C9A92]">ingles, portugues</span>
+                  <span className="text-[#7C9A92]">{seller.language}ss</span>
                 </div>
               </div>
             </div>

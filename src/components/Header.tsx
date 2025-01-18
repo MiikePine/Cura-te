@@ -36,11 +36,12 @@ const router = useRouter()
           // Fetch seller profile data using the user UUID
           const { data, error } = await supabase
           .from('seller')
-          .select('name')
-          .eq('id', session.user.id);
+          .select('*')
+          .eq('userUID', session.user.id);
   
           console.log("Consulta à tabela seller feita com o user id:", session.user.id);
           console.log("data", session.user);
+          console.log("imagem user logado", session.user.image)
   
           if (error) {
             console.error("Erro na consulta à tabela seller:", error);
@@ -113,11 +114,11 @@ const router = useRouter()
         className="flex items-center space-x-3 focus:outline-none"
       >
         <div className="relative">
-          <img
-            src={user?.avatar_url || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"}
-            alt={user?.email || "Profile"}
-            className="h-8 w-8 rounded-full object-cover border-2 border-[#7C9A92]"
-          />
+        <img
+  src={profile?.image }
+  alt={profile?.name || "Profile"}
+  className="h-8 w-8 rounded-full object-cover border-2 border-[#7C9A92]"
+/>
           <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-400 border-2 border-white"></div>
         </div>
         <div className="hidden md:block text-left">
@@ -125,7 +126,7 @@ const router = useRouter()
             {profile?.name || user?.email}
           </p>
           <p className="text-xs text-[#7C9A92]">
-            {user?.name}
+            {user?.email}
           </p>
         </div>
         <ChevronDown className="h-4 w-4 text-[#4A6670]" />
@@ -250,7 +251,7 @@ const router = useRouter()
                 <>
                   <div className="flex items-center space-x-3 px-4 py-2">
                     <img
-                      src={user?.avatar_url || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"}
+                      src={user?.image || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"}
                       alt={user?.email || "Profile"}
                       className="h-10 w-10 rounded-full object-cover border-2 border-[#7C9A92]"
                     />

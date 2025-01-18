@@ -1,6 +1,7 @@
 export interface Seller {
-    id: number;
+    userUID: number;
     name: string;
+    email: string;
     branch: string;
     image: string;
   }

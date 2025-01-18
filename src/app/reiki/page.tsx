@@ -7,19 +7,47 @@ import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { setSellers } from "../../store/userSlice";
 import { RootState } from "../../store/types"; // Certifique-se de importar o tipo correto
+import UserCard from "@terapias/components/userCard";
 
+interface Seller {
+  userUID: number;
+  name: string;
+  title: string;
+  image: string;
+  rating: number;
+  reviews: number;
+  location: string;
+  languages: string[];
+  experience: string;
+  specialties: string[];
+  certifications: string[];
+  availability: string[];
+  price: string;
+  bio: string;
+  teachingStyle: string;
+  nextAvailable: string;
+  verified: boolean;
+  featured: boolean;
+  studentCount: number;
+  sessionTypes: {
+    name: string;
+    duration: string;
+    price: string;
+    description: string;
+  }[];
+}
 
 const Reiki = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
-  const sellers = useSelector((state: RootState) => state.user.sellers);
+  const [sellers, setSellers] = useState<Seller[]>([]);
 
   useEffect(() => {
     const fetchSellers = async () => {
       const { data, error } = await supabase
         .from("seller")
         .select("*")
-        .eq("branch", "Reiki");
+        .contains("specialties", ["Reiki"]);
 
       if (error) {
         console.error("Error fetching sellers:", error);
@@ -73,38 +101,27 @@ const Reiki = () => {
       {/* Sellers Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sellers
-            .filter(
-              (seller) =>
-                seller.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                seller.title.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .map((seller) => (
-              <Link key={seller.id} href={`/profile/${seller.name}`}>
-                <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer">
-                  <div className="relative">
-                    <Image
-                      src={seller.image}
-                      alt={seller.name}
-                      className="w-full h-48 object-cover"
-                      width={160}
-                      height={160}
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-[#4A6670] mb-1">
-                      {seller.name}
-                    </h3>
-                    <p className="text-[#7C9A92] mb-3">
-                      Shamanic Reiki Practitioner
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            ))}
-        </div>
-      </div>
-    </div>
+    {sellers.map((seller) => (
+      <UserCard
+        key={seller.userUID}
+        userUID={seller.userUID}
+        name={seller.name}
+        title={seller.title}
+        image={seller.image}
+        rating={seller.rating}
+        reviews={seller.reviews}
+        location={seller.location}
+        experience={seller.experience}
+        studentCount={seller.studentCount}
+        nextAvailable={seller.nextAvailable}
+        specialties={seller.specialties}
+        price={seller.price}
+        verified={seller.verified}
+        featured={seller.featured}
+      />
+    ))}
+  </div>
+</div>        </div>
   );
 };
 
