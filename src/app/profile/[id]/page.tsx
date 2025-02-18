@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../../db/supabase';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 
 interface Seller {
   userUID: number;
@@ -28,9 +27,8 @@ export default function SellerProfile() {
 
 const [seller, setSeller] = useState<Seller | null>(null);
 const [loading, setLoading] = useState(true);
-const params = useParams();
-const router = useRouter();
-  const { id } = router.query;
+
+const { id } = useParams(); // ✅ Correct way to get params in App Router
 
 
   useEffect(() => {

@@ -146,7 +146,7 @@ export default function Home() {
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-4">How It Works</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-4">How It Workssss</h2>
           <p className="text-[#7C9A92] max-w-2xl mx-auto">
             Your journey to holistic wellness made simple
           </p>
@@ -186,9 +186,9 @@ export default function Home() {
     <section className="py-16 bg-[#F8F5F1]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-4">What Our Community Says</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-4">What Our Community Sayssss</h2>
           <p className="text-[#7C9A92] max-w-2xl mx-auto">
-            Real stories from people who have found their path to wellness
+            Real stories from people who have found their path to wellnesssss
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
