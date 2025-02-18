@@ -6,13 +6,13 @@ import {
   Globe,
   Award,
   BookOpen,
-  Clock,
+
   MapPin,
-  Calendar,
-  Video,
+ 
+  
   Users,
 } from 'lucide-react';
-import { Seller } from '../../../store/';
+import { Seller } from '/../../../store';
 import { Separator } from "../../../../@/components/ui/separator";
 import { Badge } from "../../../../@/components/ui/badge";
 import { Switch } from "../../../../@/components/ui/switch";
