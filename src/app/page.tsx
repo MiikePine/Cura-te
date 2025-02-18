@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import {
   Search, ArrowRight, Shield, Star, Heart,
-  Users, Calendar, MessageSquare, CheckCircle,
-  MapPin, Globe, Award, Sparkles, Leaf,
-  Clock, ThumbsUp, Gift
+  Users, Calendar, MessageSquare,
+   Globe, Sparkles, Leaf,
+   ThumbsUp, Gift
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';

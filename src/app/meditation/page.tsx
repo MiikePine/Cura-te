@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import {
-  Search, Sliders, Heart, Star, MapPin, Globe, Book,
+  Search, Heart, Star, MapPin, Book,
   Calendar, Users, CheckCircle,
 } from "lucide-react";
 import Image from "next/image";

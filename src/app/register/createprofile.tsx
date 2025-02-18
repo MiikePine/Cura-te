@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { ProfileForm } from '../components/ProfileForm';
-import { RegistrationStepper } from '../components/RegistrationStepper';
+import { ProfileForm } from '../../components/ProfileForm';
+import { RegistrationStepper } from '../../components/RegistrationStepper';
 import { ProfileFormData } from '../store/types';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../@/components/ui/button';
 import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from '../lib/supabase';
+import { useToast } from "../../../@/hooks/use-toast";
+import { supabase } from '../../db/supabase';
 
 function CreateProfile() {
   const { toast } = useToast();
