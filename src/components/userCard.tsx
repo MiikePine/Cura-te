@@ -25,9 +25,7 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({
   userUID,
-  name,
-  email,
-  
+  name,  
   title,
   image,
   rating,

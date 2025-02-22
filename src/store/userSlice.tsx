@@ -11,13 +11,14 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      state.user = action.payload; // Altera os dados do usuário
+      state.user = action.payload;
     },
     logout: (state) => {
-      state.user = null; // Limpa os dados do usuário no logout
+      state.user = null;
+      state.sellers = [];
     },
     setSellers: (state, action) => {
-      state.sellers = action.payload; // Altera os dados dos vendedores
+      state.sellers = action.payload; // Expects action.payload to be Seller[]
     },
   },
 });

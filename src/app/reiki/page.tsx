@@ -1,46 +1,21 @@
 "use client"
-import Link from "next/link";
+
 import React, { useState, useEffect } from "react";
 import { supabase } from "@terapias/db/supabase";
 import { Search } from "lucide-react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { setSellers } from "../../store/userSlice";
-import { RootState } from "../../store/types"; // Certifique-se de importar o tipo correto
+import { setSellers } from '../../store/userSlice';
 import UserCard from "@terapias/components/userCard";
+import { Tables } from '../../types/database.types';
+import { RootState, AppDispatch } from '../../store/store';
 
-interface Seller {
-  userUID: number;
-  name: string;
-  title: string;
-  image: string;
-  rating: number;
-  reviews: number;
-  location: string;
-  languages: string[];
-  experience: string;
-  specialties: string[];
-  certifications: string[];
-  availability: string[];
-  price: string;
-  bio: string;
-  teachingStyle: string;
-  nextAvailable: string;
-  verified: boolean;
-  featured: boolean;
-  studentCount: number;
-  sessionTypes: {
-    name: string;
-    duration: string;
-    price: string;
-    description: string;
-  }[];
-}
+type Seller = Tables<'seller'>;
 
 const Reiki = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const dispatch = useDispatch();
-  const [sellers, setSellers] = useState<Seller[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const sellers = useSelector((state: RootState) => state.user.sellers) as Seller[]; // Type assertion para garantir Seller[]
 
   useEffect(() => {
     const fetchSellers = async () => {
@@ -54,7 +29,7 @@ const Reiki = () => {
         return;
       }
 
-      dispatch(setSellers(data));
+      dispatch(setSellers(data as Seller[]));
     };
 
     fetchSellers();
@@ -101,27 +76,29 @@ const Reiki = () => {
       {/* Sellers Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    {sellers.map((seller) => (
-      <UserCard
-        key={seller.userUID}
-        userUID={seller.userUID}
-        name={seller.name}
-        title={seller.title}
-        image={seller.image}
-        rating={seller.rating}
-        reviews={seller.reviews}
-        location={seller.location}
-        experience={seller.experience}
-        studentCount={seller.studentCount}
-        nextAvailable={seller.nextAvailable}
-        specialties={seller.specialties}
-        price={seller.price}
-        verified={seller.verified}
-        featured={seller.featured}
-      />
-    ))}
-  </div>
-</div>        </div>
+          {sellers.map((seller) => (
+            <UserCard
+              key={seller.userUID}
+              userUID={Number(seller.userUID)} // Convert string para number
+              name={seller.name || "Unnamed Seller"}
+              email={seller.email || "No email provided"} // Adicionado
+              title={seller.tittle || "No Title"}
+              image={seller.image || "https://via.placeholder.com/150"}
+              rating={seller.rating || 0}
+              reviews={seller.reviews || 0}
+              location={seller.location || "Unknown Location"}
+              experience={seller.yearsexperience?.toString() || "0"}
+              studentCount={0} // Valor padrão, não existe em seller
+              nextAvailable={seller.availability?.[0] || "N/A"}
+              specialties={seller.specialties || []}
+              price={seller.price || "N/A"}
+              verified={seller.verified || false}
+              featured={false} // Valor padrão, não existe em seller
+            />
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 

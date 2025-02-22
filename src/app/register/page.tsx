@@ -3,24 +3,47 @@
 import { useState } from 'react';
 import { ProfileForm } from '../../components/ProfileForm';
 import { RegistrationStepper } from '../../components/RegistrationStepper';
-import { ProfileFormData } from '../store/types';
 import { Button } from '../../../@/components/ui/button';
 import { ArrowLeft, ArrowRight, Save } from 'lucide-react';
 import { useToast } from "../../../@/hooks/use-toast";
 import { supabase } from '../../db/supabase';
+
+// Definindo a interface ProfileFormData alinhada com a tabela 'seller'
+interface ProfileFormData {
+  name: string;
+  tittle: string;
+  description: string;
+  email: string;
+  phone: string;
+  location: string;
+  yearsexperience: number;
+  price: number;
+  sessionDuration: string;
+  offersVirtual: boolean;
+  offersHomeVisits: boolean;
+  modalities: string[];
+  certifications: string[];
+  languages: string[];
+  specialties: string[];
+  socialMedia: {
+    instagram: string;
+    facebook: string;
+    linkedin: string;
+  };
+}
 
 function CreateProfile() {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<ProfileFormData>({
     name: '',
-    title: '',
-    bio: '',
+    tittle: '',
+    description: '',
     email: '',
     phone: '',
     location: '',
-    yearsOfExperience: 0,
-    hourlyRate: 0,
+    yearsexperience: 0,
+    price: 0,
     sessionDuration: '60',
     offersVirtual: false,
     offersHomeVisits: false,
@@ -68,7 +91,7 @@ function CreateProfile() {
         }
         return true;
       case 2:
-        if (!formData.title || !formData.bio) {
+        if (!formData.tittle || !formData.description) {
           toast({
             title: "Required Fields Missing",
             description: "Please fill in your professional title and bio.",
@@ -106,12 +129,32 @@ function CreateProfile() {
           return;
         }
 
-        // Save profile data to your database
+        // Salvando os dados no Supabase
+        const { error } = await supabase
+          .from('seller')
+          .insert({
+            userUID: user.id,
+            name: formData.name,
+            tittle: formData.tittle,
+            description: formData.description,
+            email: formData.email,
+            phone: formData.phone || null,
+            location: formData.location || null,
+            yearsexperience: formData.yearsexperience || null,
+            price: formData.price.toString(),
+            specialties: formData.specialties.length > 0 ? formData.specialties : null,
+            session_options: [formData.sessionDuration],
+            language: formData.languages.length > 0 ? formData.languages.join(', ') : null,
+          });
+
+        if (error) throw error;
+
         toast({
           title: "Profile Saved",
           description: "Your profile has been successfully created!",
         });
       } catch (error) {
+        console.error("Error saving profile:", error);
         toast({
           title: "Error",
           description: "Failed to save profile. Please try again.",

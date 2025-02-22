@@ -1,20 +1,25 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../db/supabase';
-import { Bell, MessageSquare, Menu, Leaf, LogOut, User, Calendar, CreditCard, ChevronDown, PlusCircle , X, Settings, Route} from 'lucide-react';
+import { Bell, MessageSquare, Menu, Leaf, LogOut, User, Calendar, CreditCard, ChevronDown, PlusCircle, X, Settings } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from "next/navigation"; // Importar useRouter
+import { useRouter } from "next/navigation";
+import Image from 'next/image';
+import { supabase } from '@terapias/db/supabase'; // Importar apenas o cliente supabase
+import { User as SupabaseUser } from '@supabase/supabase-js'; // Importar o tipo User do pacote Supabase
+import { Tables } from '../types/database.types';
+
+type Seller = Tables<'seller'>;
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [user, setUser] = useState<any>(null); // user state
-  const [profile, setProfile] = useState<any>(null); // profile state (seller)
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<Seller | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   
-const router = useRouter()
-
+  const router = useRouter();
 
   useEffect(() => {
     const getUser = async () => {
@@ -23,68 +28,48 @@ const router = useRouter()
         console.error("Erro ao obter sessão:", sessionError);
         return;
       }
-  
-      console.log("Sessão recuperada:", session);
-  
+
       if (session) {
-        console.log("Usuário autenticado:", session.user.id);  // Log do ID do usuário
         setUser(session.user);
         setIsAuthenticated(true);
-  
-        // Verifique se o session.user.id não está undefined
+
         if (session.user.id) {
-          // Fetch seller profile data using the user UUID
           const { data, error } = await supabase
-          .from('seller')
-          .select('*')
-          .eq('userUID', session.user.id);
-  
-          console.log("Consulta à tabela seller feita com o user id:", session.user.id);
-          console.log("data", session.user);
-          console.log("imagem user logado", session.user.image)
-  
+            .from('seller')
+            .select('*')
+            .eq('userUID', session.user.id)
+            .single();
+
           if (error) {
             console.error("Erro na consulta à tabela seller:", error);
-          } else if (data && Array.isArray(data) && data.length > 0) {
-            console.log("Perfil do usuário encontrado:", data);
-            setProfile(data[0]);
-            console.log("Nome do usuário:", data[0].name); // Exibe o nome do usuário
-          } else {
-            console.error('Nenhum perfil encontrado para esse usuário!');
+          } else if (data) {
+            setProfile(data);
           }
-        } else {
-          console.error("ID do usuário não encontrado!");
         }
-      } else {
-        console.error("Sessão não encontrada!");
       }
     };
-  
-    // Verifique o estado da autenticação e inscreva-se em mudanças
+
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-        console.log("Usuário autenticado:", session.user.id); // Exibe o id do usuário
         setUser(session.user);
         setIsAuthenticated(true);
-        getUser(); // Chama a função para pegar os dados do perfil do seller
+        getUser();
       } else {
-        console.log("Usuário deslogado");
         setUser(null);
         setProfile(null);
         setIsAuthenticated(false);
       }
     });
-  
-    getUser(); // Tenta pegar o usuário logo ao carregar
-  
+
+    getUser();
+
     return () => {
-      authListener?.unsubscribe(); // Desinscreve-se ao desmontar o componente
+      authListener.subscription.unsubscribe();
     };
   }, []);
-  
-  
 
   const handleLogout = async () => {
+    setIsLoggingOut(true);
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
@@ -97,6 +82,8 @@ const router = useRouter()
       }
     } catch (error) {
       console.error("Error logging out:", error);
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -112,21 +99,24 @@ const router = useRouter()
       <button
         onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
         className="flex items-center space-x-3 focus:outline-none"
+        disabled={isLoggingOut}
       >
         <div className="relative">
-        <img
-  src={profile?.image }
-  alt={profile?.name || "Profile"}
-  className="h-8 w-8 rounded-full object-cover border-2 border-[#7C9A92]"
-/>
+          <Image
+            src={profile?.image || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"}
+            alt={profile?.name || "Profile"}
+            className="h-8 w-8 rounded-full object-cover border-2 border-[#7C9A92]"
+            width={150}
+            height={150}
+          />
           <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-400 border-2 border-white"></div>
         </div>
         <div className="hidden md:block text-left">
           <p className="text-sm font-medium text-[#4A6670]">
-            {profile?.name || user?.email}
+            {profile?.name || user?.email || "User"}
           </p>
           <p className="text-xs text-[#7C9A92]">
-            {user?.email}
+            {user?.email || "No email"}
           </p>
         </div>
         <ChevronDown className="h-4 w-4 text-[#4A6670]" />
@@ -151,9 +141,10 @@ const router = useRouter()
             <button
               onClick={handleLogout}
               className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-[#F8F5F1]"
+              disabled={isLoggingOut}
             >
               <LogOut className="h-4 w-4 mr-3" />
-              Sign out
+              {isLoggingOut ? "Signing out..." : "Sign out"}
             </button>
           </div>
         </div>
@@ -166,7 +157,6 @@ const router = useRouter()
       <nav className="bg-white shadow-sm border-b border-[#E8DED1]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            {/* Logo */}
             <div className="flex items-center">
               <Link href="/" className="flex items-center">
                 <Leaf className="h-8 w-8 text-[#7C9A92]" />
@@ -174,7 +164,6 @@ const router = useRouter()
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
               {isAuthenticated ? (
                 <>
@@ -231,7 +220,6 @@ const router = useRouter()
               )}
             </div>
 
-            {/* Mobile Menu Button */}
             <button
               className="md:hidden flex items-center"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -244,20 +232,21 @@ const router = useRouter()
             </button>
           </div>
 
-          {/* Mobile Navigation */}
           {isMenuOpen && (
             <div className="md:hidden py-4 space-y-4">
               {isAuthenticated ? (
                 <>
                   <div className="flex items-center space-x-3 px-4 py-2">
-                    <img
-                      src={user?.image || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"}
+                    <Image
+                      src={profile?.image || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"}
                       alt={user?.email || "Profile"}
                       className="h-10 w-10 rounded-full object-cover border-2 border-[#7C9A92]"
+                      width={150}
+                      height={150}
                     />
                     <div>
-                      <p className="font-medium text-[#4A6670]">{profile?.name || user?.email}</p>
-                      <p className="text-sm text-[#7C9A92]">{user?.email}</p>
+                      <p className="font-medium text-[#4A6670]">{profile?.name || user?.email || "User"}</p>
+                      <p className="text-sm text-[#7C9A92]">{user?.email || "No email"}</p>
                     </div>
                   </div>
                   <div className="border-t border-[#E8DED1] pt-4">
@@ -277,9 +266,10 @@ const router = useRouter()
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-[#F8F5F1]"
+                      disabled={isLoggingOut}
                     >
                       <LogOut className="h-5 w-5 mr-3" />
-                      Sign out
+                      {isLoggingOut ? "Signing out..." : "Sign out"}
                     </button>
                   </div>
                 </>

@@ -327,6 +327,7 @@ export default function Home() {
     {sellers.map((seller) => (
       <UserCard
         key={seller.userUID}
+        email={seller.email}
         userUID={seller.userUID}
         name={seller.name}
         title={seller.title}
@@ -355,7 +356,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Ready to Start Your Healing Journey?</h2>
           <p className="text-[#E8DED1] mb-8 max-w-2xl mx-auto">
-            Join our community of practitioners and seekers. Whether you&quot;re looking to heal or to share your healing gifts, we're here to support you.
+            Join our community of practitioners and seekers. Whether you&quot;re looking to heal or to share your healing gifts, we&apos;re here to support you.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link

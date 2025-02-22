@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Lock, User, ArrowRight } from "lucide-react";
-import { loginWithEmail } from "@terapias/db/dbFetch";
 import { useRouter } from "next/navigation"; // Importar useRouter
+import { supabase } from "@terapias/db/supabase"; // Ajuste a importação conforme sua configuração do Supabase
+
+// Tipos importados do Supabase
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,25 +14,32 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-const router = useRouter()
+  const router = useRouter();
   
+  // Função de login usando o Supabase
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage("");
 
-    const response = await loginWithEmail(email, password);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    setIsLoading(false);
+      setIsLoading(false);
 
-    if (response.error) {
-      setErrorMessage(response.error);
-    } else {
-      router.push("/");
-
-      // Redirecionar ou tomar uma ação após o login bem-sucedido
-      console.log("Login successful:", response);
-      // Por exemplo: window.location.href = "/dashboard";
+      if (error) {
+        setErrorMessage(error.message);
+      } else {
+        router.push("/");  // Redirecionar após login bem-sucedido
+        console.log("Login successful:", data);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setErrorMessage("Erro inesperado durante o login.");
+      console.error("Erro ao tentar fazer login:", error);
     }
   }
 

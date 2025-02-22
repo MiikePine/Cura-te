@@ -1,29 +1,38 @@
-import { supabase } from './supabase';  // A importação do seu cliente Supabase
+import { supabase } from './supabase';
+import { User as SupabaseUser, Session } from '@supabase/supabase-js';
+import { Tables } from '../types/database.types';
 
-// Função para registro de usuário
-export async function signupWithEmail(email: string, password: string) {
+interface Availability {
+  startTime: string;
+  endTime: string;
+}
+
+interface LoginResponse {
+  user?: SupabaseUser;
+  session?: Session;
+  error?: string;
+}
+
+export async function signupWithEmail(email: string, password: string): Promise<{ user?: SupabaseUser; error?: string }> {
   try {
-    const { user, error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
       console.error("Erro no signup:", error.message);
-
-      throw error;
+      return { error: error.message };
     }
 
-    return user; // Retorna o usuário registrado
-  } catch (error: any) {
-    console.error("Erro inesperado ao tentar registrar:", error.message);
-
-    return { error: error.message };
+    return { user: data.user ?? undefined };
+  } catch (error: unknown) {
+    console.error("Erro inesperado ao tentar registrar:", error);
+    return { error: error instanceof Error ? error.message : "Erro desconhecido" };
   }
 }
 
-// Função para login com email e senha
-export async function loginWithEmail(email: string, password: string) {
+export async function loginWithEmail(email: string, password: string): Promise<LoginResponse> {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -31,30 +40,32 @@ export async function loginWithEmail(email: string, password: string) {
     });
 
     if (error) {
-      throw error;
+      return { error: error.message };
     }
 
-    return data;
-  } catch (error: any) {
-    return { error: error.message };
+    return { user: data.user ?? undefined, session: data.session ?? undefined };
+  } catch (error: unknown) {
+    console.error("Erro inesperado durante o login:", error);
+    return { error: error instanceof Error ? error.message : "Erro inesperado durante o login" };
   }
 }
 
-// Função para adicionar vendedor
-export const addSeller = async (name: string, email: string, availability: any) => {
+export const addSeller = async (name: string, email: string, availability: Availability): Promise<Tables<'seller'> | { error: string }> => {
   try {
     const { data, error } = await supabase
       .from('seller')
-      .insert([{ name, email, availability }]);
+      .insert([{ name, email, availability: [availability.startTime, availability.endTime] }]) // Ajuste para string[]
+      .select()
+      .single();
 
     if (error) {
       console.error("Erro ao adicionar vendedor:", error.message);
-      throw new Error(error.message);
+      return { error: error.message };
     }
 
-    return data; // Dados retornados do Supabase, se necessário
-  } catch (error) {
+    return data as Tables<'seller'>;
+  } catch (error: unknown) {
     console.error("Erro inesperado ao adicionar vendedor:", error);
-    throw new Error('Erro ao adicionar vendedor');
+    return { error: error instanceof Error ? error.message : "Erro ao adicionar vendedor" };
   }
 };

@@ -5,7 +5,7 @@ import "./globals.css";
 import Header from "@terapias/components/Header";
 import Footer from "@terapias/components/Footer";
 import { Provider } from "react-redux";
-import { store } from "../store"; // Importando a store
+import { store } from "../store/store"; // Importando a store
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -15,9 +15,10 @@ export type Database = {
           branch: string | null
           created_at: string
           description: string | null
+          phone:number | null
           email: string | null
           id: number | null
-          image: string | null
+          image?: string | null
           language: string | null
           location: string | null
           name: string | null
@@ -27,6 +28,7 @@ export type Database = {
           reviews: number | null
           session_options: string[] | null
           specialties: string[] | null
+          tittle: string | null
           userUID: string
           verified: boolean | null
           yearsexperience: number | null
@@ -36,6 +38,7 @@ export type Database = {
           branch?: string | null
           created_at?: string
           description?: string | null
+          phone:number | null
           email?: string | null
           id?: number | null
           image?: string | null
@@ -48,6 +51,7 @@ export type Database = {
           reviews?: number | null
           session_options?: string[] | null
           specialties?: string[] | null
+          tittle?: string | null
           userUID?: string
           verified?: boolean | null
           yearsexperience?: number | null
@@ -57,6 +61,7 @@ export type Database = {
           branch?: string | null
           created_at?: string
           description?: string | null
+          phone:number | null
           email?: string | null
           id?: number | null
           image?: string | null
@@ -69,6 +74,7 @@ export type Database = {
           reviews?: number | null
           session_options?: string[] | null
           specialties?: string[] | null
+          tittle?: string | null
           userUID?: string
           verified?: boolean | null
           yearsexperience?: number | null
