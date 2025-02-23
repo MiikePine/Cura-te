@@ -1,16 +1,19 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import {
-  Search, ArrowRight, Shield, Star, Heart,
-  Users, Calendar, MessageSquare,
-   Globe, Sparkles, Leaf,
-   ThumbsUp, Gift
-} from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { supabase } from '@terapias/db/supabase';
-import UserCard from '@terapias/components/userCard';
+  Search, ArrowRight, Shield, Star, Heart, Users, Calendar, MessageSquare,
+  Globe, Sparkles, Leaf, ThumbsUp, Gift, ChevronDown, MapPin
+} from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { supabase } from "@terapias/db/supabase";
+import UserCard from "@terapias/components/userCard";
+import mapboxgl from "mapbox-gl"; // Corrigido para importação padrão
+import "mapbox-gl/dist/mapbox-gl.css";
+
+// Configuração do token do Mapbox (substitua pelo teu token real)
+mapboxgl.accessToken = "YOUR_MAPBOX_ACCESS_TOKEN"; // Adicione teu token aqui
 
 interface Seller {
   userUID: number;
@@ -33,148 +36,340 @@ interface Seller {
   verified: boolean;
   featured: boolean;
   studentCount: number;
-  sessionTypes: {
-    name: string;
-    duration: string;
-    price: string;
-    description: string;
-  }[];
+  sessionTypes: { name: string; duration: string; price: string; description: string }[];
 }
 
-const categories = [
-  {
-    name: 'Reiki',
-    path: '/reiki',
-    icon: Sparkles,
-    description: 'Reiki, Pranic Healing, and more'
-  },
-  {
-    name: 'Meditation',
-    path: '/meditation',
-    icon: Heart,
-    description: 'Mindfulness and guided practices'
-  },
-  {
-    name: 'Holistic Therapy',
-    path: '/categories/holistic-therapy',
-    icon: Leaf,
-    description: 'Mind-body-spirit integration'
-  },
-  {
-    name: 'Sound Healing',
-    path: '/categories/sound-healing',
-    icon: MessageSquare,
-    description: 'Vibrational therapy and sound baths'
-  },
-  {
-    name: 'Traditional Medicine',
-    path: '/categories/traditional-medicine',
-    icon: Gift,
-    description: 'Ancient healing wisdom'
-  },
-  {
-    name: 'Movement Therapy',
-    path: '/categories/movement',
-    icon: Users,
-    description: 'Yoga, Qigong, and conscious movement'
-  }
+// Lista expandida de terapias (50 opções)
+const therapies = [
+  { name: "Yoga", path: "/yoga", icon: Users, description: "Movement and breath" },
+  { name: "Reiki", path: "/reiki", icon: Sparkles, description: "Energy healing" },
+  { name: "Meditation", path: "/meditation", icon: Heart, description: "Inner peace" },
+  { name: "Ayurvedic Massage", path: "/ayurvedic-massage", icon: Leaf, description: "Holistic touch" },
+  { name: "Shamanism", path: "/shamanism", icon: Gift, description: "Spiritual connection" },
+  { name: "Sound Healing", path: "/sound-healing", icon: MessageSquare, description: "Vibrational therapy" },
+  { name: "Holistic Therapy", path: "/holistic-therapy", icon: Leaf, description: "Mind-body harmony" },
+  { name: "Hypnosis", path: "/hypnosis", icon: Sparkles, description: "Subconscious exploration" },
+  { name: "Astrology", path: "/astrology", icon: Globe, description: "Celestial guidance" },
+  { name: "Wim Hof Method", path: "/wim-hof", icon: ThumbsUp, description: "Cold therapy" },
+  { name: "Qigong", path: "/qigong", icon: Users, description: "Energy flow" },
+  { name: "Aromatherapy", path: "/aromatherapy", icon: Leaf, description: "Healing scents" },
+  { name: "Acupuncture", path: "/acupuncture", icon: Sparkles, description: "Energy balance" },
+  { name: "Crystal Healing", path: "/crystal-healing", icon: Gift, description: "Crystal energy" },
+  { name: "Tai Chi", path: "/tai-chi", icon: Users, description: "Flowing movement" },
+  { name: "Breathwork", path: "/breathwork", icon: Heart, description: "Conscious breathing" },
+  { name: "Chakra Balancing", path: "/chakra-balancing", icon: Sparkles, description: "Energy alignment" },
+  { name: "Reflexology", path: "/reflexology", icon: Leaf, description: "Foot therapy" },
+  { name: "Naturopathy", path: "/naturopathy", icon: Leaf, description: "Natural healing" },
+  { name: "Tarot Reading", path: "/tarot", icon: Globe, description: "Intuitive guidance" },
+  { name: "Mindfulness", path: "/mindfulness", icon: Heart, description: "Present awareness" },
+  { name: "Kundalini Yoga", path: "/kundalini-yoga", icon: Users, description: "Spiritual awakening" },
+  { name: "Craniosacral Therapy", path: "/craniosacral", icon: Leaf, description: "Gentle touch" },
+  { name: "Energy Clearing", path: "/energy-clearing", icon: Sparkles, description: "Aura cleansing" },
+  { name: "Herbal Medicine", path: "/herbal-medicine", icon: Leaf, description: "Plant remedies" },
+  { name: "Pranic Healing", path: "/pranic-healing", icon: Sparkles, description: "Life energy" },
+  { name: "Shiatsu", path: "/shiatsu", icon: Leaf, description: "Pressure points" },
+  { name: "Dance Therapy", path: "/dance-therapy", icon: Users, description: "Healing movement" },
+  { name: "Art Therapy", path: "/art-therapy", icon: Gift, description: "Creative expression" },
+  { name: "Numerology", path: "/numerology", icon: Globe, description: "Number insights" },
+  { name: "Biofeedback", path: "/biofeedback", icon: ThumbsUp, description: "Body awareness" },
+  { name: "Color Therapy", path: "/color-therapy", icon: Sparkles, description: "Healing colors" },
+  { name: "Flower Essences", path: "/flower-essences", icon: Leaf, description: "Emotional balance" },
+  { name: "Guided Visualization", path: "/guided-visualization", icon: Heart, description: "Mental imagery" },
+  { name: "Polarity Therapy", path: "/polarity-therapy", icon: Sparkles, description: "Energy flow" },
+  { name: "Somatic Experiencing", path: "/somatic-experiencing", icon: Leaf, description: "Trauma release" },
+  { name: "Feng Shui", path: "/feng-shui", icon: Globe, description: "Space harmony" },
+  { name: "Jin Shin Jyutsu", path: "/jin-shin-jyutsu", icon: Leaf, description: "Energy touch" },
+  { name: "Kinesiology", path: "/kinesiology", icon: ThumbsUp, description: "Muscle testing" },
+  { name: "Lymphatic Drainage", path: "/lymphatic-drainage", icon: Leaf, description: "Detox massage" },
+  { name: "Magnet Therapy", path: "/magnet-therapy", icon: Sparkles, description: "Magnetic healing" },
+  { name: "Osteopathy", path: "/osteopathy", icon: Leaf, description: "Structural balance" },
+  { name: "Psychic Healing", path: "/psychic-healing", icon: Gift, description: "Intuitive energy" },
+  { name: "Rolfing", path: "/rolfing", icon: Leaf, description: "Body alignment" },
+  { name: "Tantra", path: "/tantra", icon: Heart, description: "Sacred connection" },
+  { name: "Traditional Chinese Medicine", path: "/tcm", icon: Leaf, description: "Ancient wisdom" },
+  { name: "Trager Approach", path: "/trager", icon: Users, description: "Gentle movement" },
+  { name: "Vision Quest", path: "/vision-quest", icon: Globe, description: "Spiritual journey" },
+  { name: "Zero Balancing", path: "/zero-balancing", icon: Leaf, description: "Body-mind tune" },
+  { name: "Vedic Astrology", path: "/vedic-astrology", icon: Globe, description: "Karmic insights" },
 ];
 
+// Distritos de Portugal para o dropdown
+const districtsPortugal = [
+  "Aveiro", "Beja", "Braga", "Bragança", "Castelo Branco", "Coimbra", "Évora",
+  "Faro", "Guarda", "Leiria", "Lisboa", "Portalegre", "Porto", "Santarém",
+  "Setúbal", "Viana do Castelo", "Vila Real", "Viseu", "Açores", "Madeira"
+];
 
+// Dados fictícios para stats e testimonials
+const stats = [
+  { id: 1, name: "Wellness Guides", value: "8,000+", icon: Users },
+  { id: 2, name: "Sessions Booked", value: "15,000+", icon: Calendar },
+  { id: 3, name: "Happy Clients", value: "12,000+", icon: Heart },
+  { id: 4, name: "Therapies Offered", value: "50+", icon: Sparkles },
+];
 
 const testimonials = [
-  {
-    id: 1,
-    content: "Working with Dr. Chen transformed my approach to health. Her integrative methods helped me overcome chronic issues I've struggled with for years.",
-    author: "Emily Watson",
-    role: "Yoga Teacher",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80",
-    rating: 5
-  },
-  {
-    id: 2,
-    content: "The spiritual guidance and energy work with Michael helped me find clarity and purpose. It's been a life-changing experience.",
-    author: "James Martinez",
-    role: "Business Executive",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80",
-    rating: 5
-  },
-  {
-    id: 3,
-    content: "Dr. Patel's Ayurvedic treatments have completely transformed my digestive health and energy levels. Her knowledge is incredible.",
-    author: "Sarah Thompson",
-    role: "Health Coach",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80",
-    rating: 5
-  }
-];
-
-const stats = [
-  { id: 1, name: 'Verified Practitioners', value: '500+', icon: Shield },
-  { id: 2, name: 'Happy Clients', value: '10,000+', icon: ThumbsUp },
-  { id: 3, name: 'Healing Modalities', value: '50+', icon: Sparkles },
-  { id: 4, name: 'Countries Served', value: '25+', icon: Globe }
+  { id: 1, content: "Transformative experience!", author: "Anna S.", role: "Client", rating: 5, image: "https://via.placeholder.com/150" },
+  { id: 2, content: "I feel so balanced now.", author: "Luc M.", role: "Client", rating: 5, image: "https://via.placeholder.com/150" },
+  { id: 3, content: "Highly recommend!", author: "Clara B.", role: "Client", rating: 5, image: "https://via.placeholder.com/150" },
 ];
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState('');
-    const [sellers, setSellers] = useState<Seller[]>([]);
-  
-     useEffect(() => {
-        const fetchSellers = async () => {
-          try {
-            const { data, error } = await supabase
-            .from("seller")
-            .select("*")
-      console.log("perfis,", data)
-            if (error) {
-              console.error("Error fetching sellers:", error.message, error.details);
-              return;
-            }
-      
-            setSellers(data || []);
-          } catch (err) {
-            console.error("Unexpected error fetching sellers:", err);
-          }
-        };
-      
-        fetchSellers();
-      }, []); 
-    
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [sellers, setSellers] = useState<Seller[]>([]);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [visibleTherapies, setVisibleTherapies] = useState(12);
+  const mapContainer = useRef(null); // Ref para o container do mapa
+  const map = useRef<mapboxgl.Map | null>(null); // Ref para a instância do mapa
+
+  useEffect(() => {
+    const fetchSellers = async () => {
+      try {
+        const { data, error } = await supabase.from("seller").select("*").limit(6);
+        if (error) throw error;
+        setSellers(data || []);
+      } catch (err) {
+        console.error("Error fetching sellers:", err);
+      }
+    };
+    fetchSellers();
+  }, []);
+
+  useEffect(() => {
+    if (map.current || !mapContainer.current) return; // Só inicializa o mapa uma vez
+
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v11",
+      center: [-9.137, 38.722], // Centro de Portugal (Lisboa)
+      zoom: 6,
+    });
+
+    // Pins fictícios (substitua por dados reais do Supabase)
+    const pins = [
+      { lng: -9.137, lat: 38.722, name: "Therapist in Lisbon" },
+      { lng: -8.611, lat: 41.149, name: "Therapist in Porto" },
+      { lng: -8.404, lat: 40.203, name: "Therapist in Coimbra" },
+    ];
+
+    pins.forEach((pin) => {
+      new mapboxgl.Marker()
+        .setLngLat([pin.lng, pin.lat])
+        .setPopup(new mapboxgl.Popup().setHTML(`<h3 class="text-[#4A6670] text-sm font-semibold">${pin.name}</h3>`))
+        .addTo(map.current!);
+    });
+
+    // Limpeza ao desmontar o componente
+    return () => map.current?.remove();
+  }, []);
+
+  const loadMoreTherapies = () => {
+    setVisibleTherapies((prev) => Math.min(prev + 12, therapies.length));
+  };
+
+  const renderHero = () => (
+    <div className="relative bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white py-36 overflow-hidden">
+      <Image
+        src="https://images.unsplash.com/photo-1596567756492-166d421e5360?auto=format&fit=crop&q=80"
+        alt="Mystical Crystal in Nature"
+        className="absolute inset-0 opacity-20 object-cover"
+        width={1920}
+        height={1080}
+        priority
+        sizes="100vw"
+      />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+          Your Journey to Inner Balance Begins Here
+        </h1>
+        <p className="text-lg md:text-xl mb-10 text-[#E8DED1] max-w-2xl mx-auto">
+          Explore holistic practices and connect with Portugal’s finest wellness guides.
+        </p>
+        <div className="relative bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg max-w-4xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-[#7C9A92]" />
+              <input
+                type="text"
+                placeholder="Search for yoga, reiki, meditation or more..."
+                className="w-full pl-12 pr-12 py-4 bg-white rounded-lg text-[#4A6670] placeholder-[#7C9A92] focus:outline-none focus:ring-2 focus:ring-[#E6B17E] text-lg shadow-sm"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+              />
+              {searchQuery && (
+                <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-[#7C9A92] cursor-pointer" />
+              )}
+              {isSearchFocused && searchQuery && (
+                <div className="absolute top-full left-0 mt-2 w-full bg-white rounded-lg shadow-xl max-h-80 overflow-y-auto z-20 border border-[#E8DED1]">
+                  {therapies
+                    .filter((therapy) => therapy.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                    .map((therapy) => (
+                      <Link
+                        key={therapy.name}
+                        href={therapy.path}
+                        className="flex items-center px-4 py-3 text-[#4A6670] hover:bg-[#E6B17E]/10 transition-colors"
+                      >
+                        <therapy.icon className="h-5 w-5 mr-3 text-[#7C9A92]" />
+                        <span className="text-base">{therapy.name}</span>
+                      </Link>
+                    ))}
+                </div>
+              )}
+            </div>
+            <div className="relative flex-1">
+              <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 h-6 w-6 text-[#7C9A92]" />
+              <select
+                className="w-full pl-12 pr-4 py-4 bg-white rounded-lg text-[#4A6670] focus:outline-none focus:ring-2 focus:ring-[#E6B17E] text-lg shadow-sm"
+                value={selectedDistrict}
+                onChange={(e) => setSelectedDistrict(e.target.value)}
+              >
+                <option value="">All Districts</option>
+                {districtsPortugal.map((district) => (
+                  <option key={district} value={district}>
+                    {district}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button className="bg-[#E6B17E] text-white px-8 py-4 rounded-lg hover:bg-[#D9A066] transition-colors text-lg font-medium">
+              Discover Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderTherapies = () => (
+    <section className="py-16 bg-[#F8F5F1]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">
+          Explore Our Practices
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+          {therapies.slice(0, visibleTherapies).map((therapy) => (
+            <Link
+              href={therapy.path}
+              key={therapy.name}
+              className="group bg-white rounded-lg p-4 shadow-sm hover:shadow-lg hover:bg-[#E6B17E]/10 transition-all duration-300 transform hover:-translate-y-1"
+            >
+              <div className="text-center">
+                <div className="bg-[#7C9A92]/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <therapy.icon className="h-6 w-6 text-[#7C9A92] group-hover:text-[#E6B17E] transition-colors" />
+                </div>
+                <h3 className="text-sm font-semibold text-[#4A6670] group-hover:text-[#E6B17E] transition-colors">
+                  {therapy.name}
+                </h3>
+                <p className="text-xs text-[#7C9A92] mt-1">{therapy.description}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+        {visibleTherapies < therapies.length && (
+          <div className="text-center mt-10">
+            <button
+              onClick={loadMoreTherapies}
+              className="inline-flex items-center px-6 py-3 bg-[#7C9A92] text-white rounded-lg hover:bg-[#E6B17E] transition-colors text-base font-medium"
+            >
+              See More Therapies <ChevronDown className="h-5 w-5 ml-2" />
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+
+  const renderMap = () => (
+    <section className="py-16 bg-[#F8F5F1]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">
+          Find Nearby Guides
+        </h2>
+        <div className="relative h-[400px] rounded-xl overflow-hidden shadow-lg">
+          <div ref={mapContainer} className="w-full h-full" />
+        </div>
+      </div>
+    </section>
+  );
 
   const renderHowItWorks = () => (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-4">How It Workssss</h2>
-          <p className="text-[#7C9A92] max-w-2xl mx-auto">
-            Your journey to holistic wellness made simple
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <h2 className="text-3xl font-bold text-[#4A6670] text-center mb-12">
+          Your Path to Wellness
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {[
-            {
-              icon: Search,
-              title: "Find Your Healer",
-              description: "Browse verified practitioners and read authentic reviews to find your perfect match"
-            },
-            {
-              icon: Calendar,
-              title: "Book Your Session",
-              description: "Schedule appointments easily with our integrated booking system"
-            },
-            {
-              icon: Heart,
-              title: "Begin Your Journey",
-              description: "Connect with your practitioner and start your path to wellness"
-            }
+            { icon: Search, title: "Explore Practices", desc: "Find trusted guides in your area" },
+            { icon: Calendar, title: "Book a Session", desc: "Schedule with ease and flexibility" },
+            { icon: Heart, title: "Feel the Change", desc: "Embrace your holistic transformation" },
           ].map((step, index) => (
-            <div key={index} className="text-center p-6">
-              <div className="bg-[#F8F5F1] w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <step.icon className="h-8 w-8 text-[#7C9A92]" />
+            <div
+              key={index}
+              className="group text-center p-6 bg-[#F8F5F1] rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+            >
+              <div className="bg-[#E6B17E]/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-[#E6B17E]/20 transition-colors">
+                <step.icon className="h-8 w-8 text-[#E6B17E] group-hover:text-[#D9A066] transition-colors" />
               </div>
               <h3 className="text-xl font-semibold text-[#4A6670] mb-2">{step.title}</h3>
-              <p className="text-[#7C9A92]">{step.description}</p>
+              <p className="text-base text-[#7C9A92]">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  const renderStats = () => (
+    <section className="py-12 bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat) => (
+            <div key={stat.id} className="text-center">
+              <div className="bg-white/10 w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-3">
+                <stat.icon className="h-6 w-6" />
+              </div>
+              <div className="text-2xl font-bold mb-1">{stat.value}</div>
+              <div className="text-[#E8DED1] text-sm">{stat.name}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+
+  const renderPractitioners = () => (
+    <section className="py-16 bg-[#F8F5F1]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-10">
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-4 sm:mb-0">Featured Wellness Guides</h2>
+          <Link href="/practitioners" className="text-[#E6B17E] hover:text-[#D9A066] flex items-center text-base font-medium">
+            See All <ArrowRight className="h-4 w-4 ml-2" />
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {sellers.map((seller) => (
+            <div key={seller.userUID} className="transform transition-all duration-300 hover:-translate-y-1">
+              <UserCard
+                email={seller.email}
+                userUID={seller.userUID}
+                name={seller.name}
+                title={seller.title}
+                image={seller.image}
+                rating={seller.rating}
+                reviews={seller.reviews}
+                location={seller.location}
+                experience={seller.experience}
+                studentCount={seller.studentCount}
+                nextAvailable={seller.nextAvailable}
+                specialties={seller.specialties}
+                price={seller.price}
+                verified={seller.verified}
+                featured={seller.featured}
+              />
             </div>
           ))}
         </div>
@@ -183,30 +378,31 @@ export default function Home() {
   );
 
   const renderTestimonials = () => (
-    <section className="py-16 bg-[#F8F5F1]">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-4">What Our Community Sayssss</h2>
-          <p className="text-[#7C9A92] max-w-2xl mx-auto">
-            Real stories from people who have found their path to wellnesssss
-          </p>
-        </div>
+        <h2 className="text-3xl font-bold text-[#4A6670] text-center mb-12">
+          Voices of Transformation
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial) => (
-            <div key={testimonial.id} className="bg-white rounded-xl p-6 shadow-sm">
+            <div
+              key={testimonial.id}
+              className="bg-[#F8F5F1] rounded-xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+            >
               <div className="flex items-center space-x-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star key={i} className="h-5 w-5 text-[#E6B17E] fill-current" />
                 ))}
               </div>
-              <p className="text-[#4A6670] mb-6">&quot;{testimonial.content}&quot;</p>
+              <p className="text-[#4A6670] mb-6 italic text-base">"{testimonial.content}"</p>
               <div className="flex items-center">
                 <Image
-                  src={testimonial.image || 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80'}
+                  src={testimonial.image}
                   alt={testimonial.author}
                   className="w-12 h-12 rounded-full object-cover mr-4"
-                  width={150}
-                  height={150}
+                  width={48}
+                  height={48}
+                  sizes="48px"
                 />
                 <div>
                   <p className="font-semibold text-[#4A6670]">{testimonial.author}</p>
@@ -220,160 +416,41 @@ export default function Home() {
     </section>
   );
 
-  const renderStats = () => (
+  const renderCTA = () => (
     <section className="py-16 bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((stat) => (
-            <div key={stat.id} className="text-center">
-              <div className="bg-white/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <stat.icon className="h-8 w-8" />
-              </div>
-              <div className="text-3xl font-bold mb-2">{stat.value}</div>
-              <div className="text-[#E8DED1]">{stat.name}</div>
-            </div>
-          ))}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-3xl font-bold mb-6">Ready to Embrace Your Wellness?</h2>
+        <p className="text-[#E8DED1] mb-8 max-w-2xl mx-auto text-lg">
+          Join a vibrant community of holistic practitioners and seekers in Portugal. Start today — your first step is free!
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link
+            href="/register"
+            className="bg-[#E6B17E] text-white px-8 py-3 rounded-lg hover:bg-[#D9A066] transition-colors text-base font-medium"
+          >
+            Share Your Practice
+          </Link>
+          <Link
+            href="/practitioners"
+            className="bg-white text-[#4A6670] px-8 py-3 rounded-lg hover:bg-[#E8DED1] transition-colors text-base font-medium"
+          >
+            Find Your Guide
+          </Link>
         </div>
       </div>
     </section>
   );
 
- 
-
   return (
-    <div className="min-h-screen bg-[#F8F5F1]">
-      {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="https://images.unsplash.com/photo-1600618528240-fb9fc964b853?auto=format&fit=crop&q=80"
-            alt="Background"
-            className="opacity-10"
-            width={1920}
-            height={1080}
-          />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center max-w-3xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Find Your Path to Wellness
-            </h1>
-            <p className="text-xl mb-12 text-[#E8DED1]">
-              Connect with verified holistic practitioners and begin your healing journey
-            </p>
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 shadow-lg">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-3.5 h-5 w-5 text-[#7C9A92]" />
-                  <input
-                    type="text"
-                    placeholder="Search practices or practitioners..."
-                    className="w-full pl-12 pr-4 py-3 bg-white rounded-lg text-[#4A6670] placeholder-[#7C9A92] focus:outline-none focus:ring-2 focus:ring-[#7C9A92]"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <button className="bg-[#7C9A92] text-white px-8 py-3 rounded-lg hover:bg-[#6A8B83] transition-colors">
-                  Search
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-[#F8F5F1] overflow-x-hidden">
+      {renderHero()}
+      {renderTherapies()}
+      {renderMap()}
       {renderHowItWorks()}
-
-      {/* Categories Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <h2 className="text-3xl font-bold text-[#4A6670] mb-8">Explore Healing Practices</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {categories.map((category) => (
-            <Link
-              href={category.path}
-              key={category.name}
-              className="group bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-200 border border-[#E8DED1]"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="bg-[#F8F5F1] p-3 rounded-lg">
-                  <category.icon className="h-6 w-6 text-[#7C9A92]" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-[#4A6670] group-hover:text-[#7C9A92] transition-colors">
-                    {category.name}
-                  </h3>
-                  <p className="text-sm text-[#7C9A92] mt-1">{category.description}</p>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
       {renderStats()}
-
-      {/* Featured Practitioners */}
-      <div className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-[#4A6670]">Featured Practitioners</h2>
-            <Link href="/practitioners" className="text-[#7C9A92] hover:text-[#6A8B83] flex items-center">
-              View All <ArrowRight className="h-4 w-4 ml-1" />
-            </Link>
-          </div>
-         
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-    {sellers.map((seller) => (
-      <UserCard
-        key={seller.userUID}
-        email={seller.email}
-        userUID={seller.userUID}
-        name={seller.name}
-        title={seller.title}
-        image={seller.image}
-        rating={seller.rating}
-        reviews={seller.reviews}
-        location={seller.location}
-        experience={seller.experience}
-        studentCount={seller.studentCount}
-        nextAvailable={seller.nextAvailable}
-        specialties={seller.specialties}
-        price={seller.price}
-        verified={seller.verified}
-        featured={seller.featured}
-      />
-    ))}
-  </div>
-</div>  
-        </div>
-      </div>
-
+      {renderPractitioners()}
       {renderTestimonials()}
-
-      {/* CTA Section */}
-      <section className="bg-gradient-to-br from-[#7C9A92] to-[#4A6670] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to Start Your Healing Journey?</h2>
-          <p className="text-[#E8DED1] mb-8 max-w-2xl mx-auto">
-            Join our community of practitioners and seekers. Whether you&quot;re looking to heal or to share your healing gifts, we&apos;re here to support you.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/register"
-              className="bg-white text-[#4A6670] px-8 py-3 rounded-lg hover:bg-[#E8DED1] transition-colors"
-            >
-              List Your Practice
-            </Link>
-            <Link
-              href="/practitioners"
-              className="bg-[#7C9A92] text-white px-8 py-3 rounded-lg hover:bg-[#6A8B83] transition-colors"
-            >
-              Find a Practitioner
-            </Link>
-          </div>
-        </div>
-      </section>
+      {renderCTA()}
     </div>
   );
 }
