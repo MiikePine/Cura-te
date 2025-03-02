@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { Camera, Edit2, Save, MapPin, Star, Calendar, Users, Award, Clock, Verified, Mail, Phone } from 'lucide-react';
-import { Tables } from '../../../types/database.types'; // Importe o tipo Seller do arquivo de tipos
+import React from "react";
+import Image from "next/image";
+import { Camera, Edit2, Save, MapPin, Star, Calendar, Users, Award, Clock, Verified, Mail } from "lucide-react";
+import { Tables } from "../../../../supabase/database.types"; // Adjusted import path
 
 // Use o tipo Seller diretamente de Tables<'seller'>
-type Seller = Tables<'seller'>;
+type Seller = Tables<"seller">;
 
 interface User {
   id: string;
@@ -32,7 +32,7 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
     <div className="bg-white rounded-xl shadow-lg p-8 mb-8 relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-[#7C9A92] opacity-5 rounded-full -translate-y-1/2 translate-x-1/2" />
-      
+
       <div className="relative">
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row items-start justify-between gap-6">
@@ -42,7 +42,7 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
             <div className="relative group">
               <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-[#7C9A92]/20 transition-all duration-300 group-hover:ring-[#7C9A92]/40">
                 <Image
-                  src={profile?.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80'}
+                  src={profile?.image || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80"}
                   alt={profile?.name || "User Profile"}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   width={200}
@@ -57,20 +57,16 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
             {/* Basic Info */}
             <div className="text-center md:text-left">
               <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-3xl font-bold text-[#4A6670]">
-                  {profile?.name || user?.email || 'Unnamed User'}
-                </h2>
-                {profile?.verified && (
-                  <Verified className="w-6 h-6 text-[#7C9A92]" />
-                )}
+                <h2 className="text-3xl font-bold text-[#4A6670]">{profile?.name || user?.email || "Unnamed User"}</h2>
+                {profile?.verified && <Verified className="w-6 h-6 text-[#7C9A92]" />}
               </div>
               <p className="text-lg text-[#7C9A92] font-medium mb-2">
-                {profile?.tittle || 'Holistic Practitioner'}
+                {profile?.title || "Holistic Practitioner"} {/* Fixed typo: tittle -> title */}
               </p>
               <div className="flex flex-wrap gap-4 text-sm text-[#4A6670]/80">
                 <div className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
-                  {profile?.location || 'Location not set'}
+                  {profile?.location || "Location not set"}
                 </div>
                 {profile?.email && (
                   <div className="flex items-center">
@@ -78,20 +74,11 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
                     {profile.email}
                   </div>
                 )}
-                {profile?.phone && (
+                {/* Note: 'phone' não existe no tipo Seller; remova ou adicione ao schema */}
+                {/* {profile?.phone && (
                   <div className="flex items-center">
                     <Phone className="w-4 h-4 mr-1" />
                     {profile.phone}
-                  </div>
-                )}
-                {/* Note que 'website' não existe em Seller do Supabase; remova ou ajuste */}
-                {/* {profile?.website && (
-                  <div className="flex items-center">
-                    <Globe className="w-4 h-4 mr-1" />
-                    <a href={profile.website} target="_blank" rel="noopener noreferrer" 
-                       className="text-[#7C9A92] hover:text-[#6A8B83] transition-colors">
-                      Website
-                    </a>
                   </div>
                 )} */}
               </div>
@@ -128,10 +115,12 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
               <div>
                 <p className="text-sm text-[#7C9A92] font-medium">Member Since</p>
                 <p className="text-lg font-semibold text-[#4A6670]">
-                  {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('en-US', {
-                    month: 'short',
-                    year: 'numeric'
-                  }) : 'N/A'}
+                  {profile?.created_at
+                    ? new Date(profile.created_at).toLocaleDateString("en-US", {
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "N/A"}
                 </p>
               </div>
             </div>
@@ -146,8 +135,7 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
               <div>
                 <p className="text-sm text-[#7C9A92] font-medium">Total Sessions</p>
                 <p className="text-lg font-semibold text-[#4A6670]">
-                  {/* totalSessions não existe em Seller; ajuste ou remova */}
-                  {profile?.reviews || 0} {/* Exemplo: usando reviews como proxy */}
+                  {profile?.student_count || 0} {/* Usando student_count como proxy */}
                 </p>
               </div>
             </div>
@@ -163,16 +151,14 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
                 <p className="text-sm text-[#7C9A92] font-medium">Rating</p>
                 <div className="flex items-center gap-2">
                   <p className="text-lg font-semibold text-[#4A6670]">
-                    {profile?.rating?.toFixed(1) || '0.0'}
+                    {profile?.rating?.toFixed(1) || "0.0"}
                   </p>
                   <div className="flex">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
                         className={`w-4 h-4 ${
-                          i < (profile?.rating || 0)
-                            ? 'text-[#E6B17E] fill-current'
-                            : 'text-gray-300'
+                          i < (profile?.rating || 0) ? "text-[#E6B17E] fill-current" : "text-gray-300"
                         }`}
                       />
                     ))}
@@ -190,17 +176,15 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
               </div>
               <div>
                 <p className="text-sm text-[#7C9A92] font-medium">Response Time</p>
-                <p className="text-lg font-semibold text-[#4A6670]">
-                  {/* responseTime não existe em Seller; ajuste ou remova */}
-                  {'< 24h'} {/* Valor padrão */}
-                </p>
+                <p className="text-lg font-semibold text-[#4A6670]">{"< 24h"}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tags/Specialties */}
-        {profile?.specialties && profile.specialties.length > 0 && (
+        {/* Note: 'specialties' não existe no tipo Seller; ajuste ou remova */}
+        {/* {profile?.specialties && profile.specialties.length > 0 && (
           <div className="mt-6">
             <div className="flex flex-wrap gap-2">
               {profile.specialties.map((specialty: string, index: number) => (
@@ -213,7 +197,7 @@ export const AccountOverview: React.FC<AccountOverviewProps> = ({
               ))}
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Tables } from '../types/database.types'; // Ajuste o caminho conforme necessário
+import { Tables } from '../../supabase/database.types'; // Ajuste o caminho conforme necessário
 
 export interface ProfileFormData {
   name: string;

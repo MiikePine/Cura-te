@@ -7,8 +7,16 @@ import { motion } from "framer-motion";
 import { supabase } from "@terapias/db/supabase";
 import UserCard from "@terapias/components/userCard";
 
-interface Seller {
-  userUID: number;
+// Define the SellerTherapy type for the seller_therapies relationship
+interface SellerTherapy {
+  therapy: {
+    name: string;
+  };
+}
+
+// Define the raw Seller type as returned by Supabase (before transformation)
+interface RawSeller {
+  useruid: string;
   name: string;
   email: string;
   title: string;
@@ -18,7 +26,32 @@ interface Seller {
   location: string;
   languages: string[];
   experience: string;
-  specialties: string[];
+  certifications: string[];
+  availability: string[];
+  price: string;
+  bio: string;
+  teachingStyle: string;
+  nextAvailable: string;
+  verified: boolean;
+  featured: boolean;
+  studentCount: number;
+  sessionTypes: { name: string; duration: string; price: string; description: string }[];
+  seller_therapies: SellerTherapy[];
+}
+
+// Updated Seller interface with transformed specialties
+interface Seller {
+  useruid: string;
+  name: string;
+  email: string;
+  title: string;
+  image: string;
+  rating: number;
+  reviews: number;
+  location: string;
+  languages: string[];
+  experience: string;
+  specialties: string[]; // Transformed from seller_therapies
   certifications: string[];
   availability: string[];
   price: string;
@@ -40,9 +73,25 @@ export default function FeaturedPractitioners() {
   useEffect(() => {
     const fetchSellers = async () => {
       try {
-        const { data, error } = await supabase.from("seller").select("*").limit(6);
+        const { data, error } = await supabase
+          .from("seller")
+          .select(`
+            *,
+            seller_therapies (
+              therapy:therapies (name)
+            )
+          `)
+          .limit(6);
+
         if (error) throw error;
-        setSellers(data || []);
+
+        // Map the data to transform seller_therapies into specialties
+        const sellersWithSpecialties: Seller[] = (data as RawSeller[]).map((seller: RawSeller) => ({
+          ...seller,
+          specialties: seller.seller_therapies?.map((st: SellerTherapy) => st.therapy.name) || [],
+        }));
+
+        setSellers(sellersWithSpecialties || []);
       } catch (err) {
         console.error("Error fetching sellers:", err);
       }
@@ -71,10 +120,10 @@ export default function FeaturedPractitioners() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {sellers.map((seller) => (
-            <motion.div variants={fadeIn} key={seller.userUID}>
+            <motion.div variants={fadeIn} key={seller.useruid}>
               <UserCard
                 email={seller.email}
-                userUID={seller.userUID}
+                useruid={seller.useruid}
                 name={seller.name}
                 title={seller.title}
                 image={seller.image}

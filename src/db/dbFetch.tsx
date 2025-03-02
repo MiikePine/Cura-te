@@ -1,6 +1,6 @@
 import { supabase } from './supabase';
 import { User as SupabaseUser, Session } from '@supabase/supabase-js';
-import { Tables } from '../types/database.types';
+import { Tables } from '../../supabase/database.types';
 
 interface Availability {
   startTime: string;

@@ -1,0 +1,73 @@
+-  actualizar bd NOS TYPES [X]
+- refazer o componente hero para pesquisa de data []
+- adiconar motion no componente do landing page das terapias []
+- melhor card []
+- fazer perfil funcionar [X]
+- melhorar pagina de perfil [X]
+- por imagens que funcionem nos componentes []
+- adicionar lingua i18b []
+
+
+
+
+
+
+
+
+-----------
+
+Semana 1: Planeamento e Frontend - Home Page
+Tarefa 1: Integrar todos os componentes em Home.tsx.
+ Ajustar importações e garantir que todos os componentes renderizam corretamente
+ Adicionar animações (framer-motion) a HowItWorks, Stats, CallToAction, Testimonials (copiar estilo de TherapiesGrid).
+Prazo: 2-3 dias (~15-20 h).
+
+
+Tarefa 2: Tornar Home.tsx responsivo.
+ Testar breakpoints (640px, 768px, 1024px) e ajustar CSS (ex.: grid-cols, padding).
+Prazo: 1-2 dias (~10-15 h).
+Output: Página inicial coesa e animada.
+Semana 2: Frontend - Hero e Mapa
+
+
+Tarefa 3: Tornar o botão "Discover Now" funcional em Hero.tsx.
+ Redirecionar para /search?therapy={searchQuery}&canton={selectedCanton}.
+ Ligar ao backend (GET sellers com filtros) — placeholder por agora.
+Prazo: 1-2 dias (~10-15 h).
+
+
+Tarefa 4: Corrigir mapa em MapLandingPage.tsx (8 pins → 50 pins).
+ Verificar se todos os 50 sellers têm lat/lng válidos (SELECT COUNT(*) FROM seller WHERE lat IS NOT NULL;).
+ Otimizar renderização (ex.: cluster pins com mapbox-gl).
+Prazo: 2-3 dias (~15-20 h).
+Output: Hero com busca básica, mapa mostrando todos os pins.
+Semana 3: Backend - Autenticação e Dados
+
+
+Tarefa 5: Configurar autenticação em MyAccount.tsx.
+ Integrar Supabase Auth (email/password + Google SSO).
+ Criar tabela users (id, email, role).
+ Ajustar RLS em seller (ex.: auth.uid() = useruid para edição).
+Prazo: 2-3 dias (~15-20 h).
+
+
+Tarefa 6: Finalizar fetch dinâmico em TherapiesGrid.tsx.
+ Substituir therapies estático por fetch de therapies no Supabase.
+ Atualizar homeData.ts para backend-driven.
+Prazo: 1-2 dias (~10-15 h).
+Output: Login funcional, terapias dinâmicas.
+Semana 4: Frontend - Perfis e Backend - Reservas
+
+
+Tarefa 7: Tornar "Book Now" funcional em SellerProfile.tsx.
+ Criar tabela bookings (id, seller_id, user_id, therapy_id, date, status).
+ Adicionar POST /bookings via Supabase Edge Function ou Next.js API.
+ Ligar botão ao endpoint.
+Prazo: 2-3 dias (~15-20 h).
+
+
+Tarefa 8: Melhorar UI de SellerProfile.tsx.
+ Adicionar galeria de fotos (array images em seller).
+ Implementar secção de avaliações (placeholder ou nova tabela reviews).
+Prazo: 2 dias (~10-15 h).
+Output: Perfis com reservas, UI mais rica.

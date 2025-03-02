@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@terapias/db/supabase";
 import { User as SupabaseUser } from "@supabase/supabase-js";
-import { Tables } from "../types/database.types";
+import { Tables } from "../../../supabase/database.types";
 
 type Seller = Tables<"seller">;
 
@@ -39,7 +39,7 @@ const Header: React.FC = () => {
           const { data, error } = await supabase
             .from("seller")
             .select("*")
-            .eq("userUID", session.user.id)
+            .eq("useruid", session.user.id)
             .single();
 
           if (error) {

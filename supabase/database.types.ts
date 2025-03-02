@@ -12,72 +12,129 @@ export type Database = {
       seller: {
         Row: {
           availability: string[] | null
-          branch: string | null
-          created_at: string
-          description: string | null
-          phone:number | null
+          bio: string | null
+          certifications: string[] | null
+          created_at: string | null
           email: string | null
-          id: number | null
-          image?: string | null
-          language: string | null
+          experience: string | null
+          featured: boolean | null
+          image: string | null
+          languages: string[] | null
+          lat: number | null
+          lng: number | null
           location: string | null
           name: string | null
+          next_available: string | null
           price: string | null
-          profession: string | null
           rating: number | null
           reviews: number | null
-          session_options: string[] | null
-          specialties: string[] | null
-          tittle: string | null
-          userUID: string
+          session_types: Json | null
+          student_count: number | null
+          teaching_style: string | null
+          title: string | null
+          useruid: string
           verified: boolean | null
-          yearsexperience: number | null
         }
         Insert: {
           availability?: string[] | null
-          branch?: string | null
-          created_at?: string
-          description?: string | null
-          phone:number | null
+          bio?: string | null
+          certifications?: string[] | null
+          created_at?: string | null
           email?: string | null
-          id?: number | null
+          experience?: string | null
+          featured?: boolean | null
           image?: string | null
-          language?: string | null
+          languages?: string[] | null
+          lat?: number | null
+          lng?: number | null
           location?: string | null
           name?: string | null
+          next_available?: string | null
           price?: string | null
-          profession?: string | null
           rating?: number | null
           reviews?: number | null
-          session_options?: string[] | null
-          specialties?: string[] | null
-          tittle?: string | null
-          userUID?: string
+          session_types?: Json | null
+          student_count?: number | null
+          teaching_style?: string | null
+          title?: string | null
+          useruid?: string
           verified?: boolean | null
-          yearsexperience?: number | null
         }
         Update: {
           availability?: string[] | null
-          branch?: string | null
-          created_at?: string
-          description?: string | null
-          phone:number | null
+          bio?: string | null
+          certifications?: string[] | null
+          created_at?: string | null
           email?: string | null
-          id?: number | null
+          experience?: string | null
+          featured?: boolean | null
           image?: string | null
-          language?: string | null
+          languages?: string[] | null
+          lat?: number | null
+          lng?: number | null
           location?: string | null
           name?: string | null
+          next_available?: string | null
           price?: string | null
-          profession?: string | null
           rating?: number | null
           reviews?: number | null
-          session_options?: string[] | null
-          specialties?: string[] | null
-          tittle?: string | null
-          userUID?: string
+          session_types?: Json | null
+          student_count?: number | null
+          teaching_style?: string | null
+          title?: string | null
+          useruid?: string
           verified?: boolean | null
-          yearsexperience?: number | null
+        }
+        Relationships: []
+      }
+      seller_therapies: {
+        Row: {
+          seller_id: string
+          therapy_id: string
+        }
+        Insert: {
+          seller_id: string
+          therapy_id: string
+        }
+        Update: {
+          seller_id?: string
+          therapy_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_therapies_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "seller"
+            referencedColumns: ["useruid"]
+          },
+          {
+            foreignKeyName: "seller_therapies_therapy_id_fkey"
+            columns: ["therapy_id"]
+            isOneToOne: false
+            referencedRelation: "therapies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      therapies: {
+        Row: {
+          description: string | null
+          id: string
+          name: string
+          path: string
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          name: string
+          path: string
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          name?: string
+          path?: string
         }
         Relationships: []
       }

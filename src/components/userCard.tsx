@@ -1,110 +1,78 @@
+"use client";
+
 import React from "react";
-import Image from "next/image";
-import { Star, MapPin, Calendar } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { Star, CheckCircle } from "lucide-react";
 
 interface UserCardProps {
-  userUID: string | number; // Aceita string ou número, dependendo do Supabase
+  useruid: string;
   name: string;
+  title: string;
   image: string;
   rating: number;
   reviews: number;
   location: string;
-  specialty: string;
-  price: string;
+  experience: string;
+  studentCount: number;
   nextAvailable: string;
+  specialties: string[];
+  price: string;
   verified: boolean;
+  email: string;
+  featured: boolean;
 }
 
-const UserCard: React.FC<UserCardProps> = ({
-  userUID, // Substitua 'userUID' por 'id'
+export default function UserCard({
+  useruid,
   name,
+  title,
   image,
   rating,
   reviews,
   location,
-  specialty,
-  price,
+  experience,
+  studentCount,
   nextAvailable,
+  specialties,
+  price,
   verified,
-}) => {
+ 
+ 
+}: UserCardProps) {
   return (
-    <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-[#E8DED1]">
-      {/* Imagem */}
-      <div className="relative">
-        <Image
-          src={image}
-          alt={name}
-          width={300}
-          height={200}
-          className="w-full h-48 object-cover"
-        />
-        {verified && (
-          <div className="absolute top-3 right-3 bg-white/80 p-1 rounded-full">
-            <div className="relative w-5 h-5">
-              <div className="absolute inset-0 bg-[#7C9A92] rounded-full opacity-20 animate-pulse"></div>
-              <svg
-                className="relative w-5 h-5 text-[#7C9A92]"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
+    <Link href={`/profile/${useruid}`} className="block">
+      <div className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 p-5 border border-[#E6B17E]/30">
+        {/* Imagem e informações principais */}
+        <div className="flex items-center space-x-4">
+          <Image
+            src={image || "https://via.placeholder.com/150"}
+            alt={name}
+            width={80}
+            height={80}
+            className="rounded-full object-cover w-20 h-20 border-2 border-[#E6B17E]/50"
+          />
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-[#4A6670] flex items-center gap-2">
+              {name} {verified && <CheckCircle className="text-[#E6B17E] w-5 h-5" />}
+            </h3>
+            <p className="text-sm text-[#7C9A92]">{title}</p>
+            <p className="text-xs text-[#7C9A92]">{location}</p>
+            <p className="text-xs text-[#7C9A92]">{specialties?.[0] || "Holistic Therapy"}</p>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Conteúdo */}
-      <div className="p-4">
-        {/* Nome e Especialidade */}
-        <div className="mb-3">
-          <h3 className="text-lg font-semibold text-[#4A6670]">{name}</h3>
-          <p className="text-sm font-medium text-[#7C9A92] bg-[#F8F5F1] inline-block px-2 py-1 rounded-full mt-1">
-            {specialty}
+        {/* Informações adicionais */}
+        <div className="mt-4 flex flex-col gap-2">
+          <p className="text-sm text-[#4A6670] flex items-center gap-1">
+            <Star className="text-[#E6B17E] w-4 h-4" /> {rating} ({reviews} reviews)
           </p>
-        </div>
-
-        {/* Avaliação e Localização */}
-        <div className="flex items-center justify-between mb-3 text-sm">
-          <div className="flex items-center">
-            <Star className="h-4 w-4 text-[#E6B17E] fill-current" />
-            <span className="ml-1 text-[#4A6670]">{rating}</span>
-            <span className="ml-1 text-[#7C9A92] opacity-70">({reviews})</span>
-          </div>
-          <div className="flex items-center">
-            <MapPin className="h-4 w-4 text-[#7C9A92] mr-1" />
-            <span className="text-[#4A6670]">{location}</span>
-          </div>
-        </div>
-
-        {/* Disponibilidade e Preço */}
-        <div className="flex items-center justify-between mb-4 text-sm">
-          <div className="flex items-center">
-            <Calendar className="h-4 w-4 text-[#7C9A92] mr-1" />
-            <span className="text-[#4A6670]">{nextAvailable}</span>
-          </div>
-          <span className="text-[#4A6670] font-semibold">{price}</span>
-        </div>
-
-        {/* Botões */}
-        <div className="flex gap-2">
-          <Link
-href={`/profile/${userUID}`} // Mantém 'userUID' como string ou número// Use 'id' em vez de 'userUID'            className="flex-1 text-center py-2 bg-[#F8F5F1] text-[#7C9A92] rounded-lg hover:bg-[#E6B17E] hover:text-white transition-colors duration-200"
-          >
-            Profile
-          </Link>
-          <button className="flex-1 py-2 bg-[#7C9A92] text-white rounded-lg hover:bg-[#E6B17E] transition-colors duration-200">
-            Book
-          </button>
+          <p className="text-sm text-[#4A6670]">Experience: {experience} years</p>
+          <p className="text-sm text-[#4A6670]">Students: {studentCount}+</p>
+          <p className="text-sm text-[#4A6670]">Next Available: {nextAvailable}</p>
+          <p className="text-sm font-medium text-[#E6B17E]">Price: {price}</p>
         </div>
       </div>
-    </div>
+    </Link>
   );
-};
-
-export default UserCard;
+}

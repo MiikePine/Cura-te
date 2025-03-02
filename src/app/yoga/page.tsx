@@ -33,7 +33,7 @@ type Seller = {
   specialties?: string[];
 };
 
-const Reiki = () => {
+const Yoga = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const dispatch = useDispatch<AppDispatch>();
@@ -42,27 +42,27 @@ const Reiki = () => {
   useEffect(() => {
     const fetchSellers = async () => {
       try {
-        // Passo 1: Buscar o therapy_id de "Reiki"
+        // Passo 1: Buscar o therapy_id de "Yoga"
         const { data: therapyData, error: therapyError } = await supabase
           .from("therapies")
           .select("id")
-          .eq("name", "Reiki")
+          .eq("name", "Yoga")
           .single();
 
         if (therapyError || !therapyData) {
-          console.error("Error fetching Reiki therapy ID:", therapyError);
+          console.error("Error fetching Yoga therapy ID:", therapyError);
           console.log("Therapy data:", therapyData);
           return;
         }
 
-        const ReikiTherapyId = therapyData.id;
-        console.log("Reiki therapy ID:", ReikiTherapyId);
+        const yogaTherapyId = therapyData.id;
+        console.log("Yoga therapy ID:", yogaTherapyId);
 
-        // Passo 2: Buscar terapeutas associados a "Reiki" via seller_therapies
+        // Passo 2: Buscar terapeutas associados a "Yoga" via seller_therapies
         const { data: sellerTherapiesData, error: sellerTherapiesError } = await supabase
           .from("seller_therapies")
           .select("seller_id")
-          .eq("therapy_id", ReikiTherapyId);
+          .eq("therapy_id", yogaTherapyId);
 
         if (sellerTherapiesError || !sellerTherapiesData) {
           console.error("Error fetching seller_therapies:", sellerTherapiesError);
@@ -71,7 +71,7 @@ const Reiki = () => {
         }
 
         const sellerIds = sellerTherapiesData.map((st) => st.seller_id);
-        console.log("Seller IDs with Reiki:", sellerIds);
+        console.log("Seller IDs with Yoga:", sellerIds);
 
         // Passo 3: Buscar detalhes dos terapeutas em seller
         const { data: sellersData, error: sellersError } = await supabase
@@ -109,15 +109,17 @@ const Reiki = () => {
         // Passo 4: Adicionar especialidades (opcional, mas útil para consistência)
         const sellersWithSpecialties = sellersData.map((seller) => ({
           ...seller,
-          specialties: ["Reiki"], // Como já filtramos por Reiki, adicionamos diretamente
+          specialties: ["Yoga"], // Como já filtramos por Yoga, adicionamos diretamente
         }));
 
         console.log("Sellers fetched:", sellersWithSpecialties);
         dispatch(setSellers(sellersWithSpecialties));
       } catch (err: unknown) {
+        // Type as unknown and handle safely
         if (err instanceof Error) {
           console.error("Error in fetchSellers:", {
             message: err.message,
+       
           });
         } else {
           console.error("Unknown error in fetchSellers:", err);
@@ -139,22 +141,22 @@ const Reiki = () => {
 
   const workshops = [
     {
-      title: "Reiki Level I Certification",
-      description: "Learn the basics of Reiki energy healing in this immersive workshop.",
+      title: "Yoga Level I Certification",
+      description: "Learn the basics of Yoga energy healing in this immersive workshop.",
       date: "March 15, 2025",
       location: "Zurich",
       price: "250 CHF",
     },
     {
-      title: "Advanced Reiki Techniques",
+      title: "Advanced Yoga Techniques",
       description: "Deepen your practice with advanced energy channeling methods.",
       date: "April 10, 2025",
       location: "Geneva",
       price: "350 CHF",
     },
     {
-      title: "Reiki Meditation Retreat",
-      description: "A weekend retreat combining Reiki and mindfulness practices.",
+      title: "Yoga Meditation Retreat",
+      description: "A weekend retreat combining Yoga and mindfulness practices.",
       date: "May 20-22, 2025",
       location: "Lausanne",
       price: "500 CHF",
@@ -167,16 +169,16 @@ const Reiki = () => {
       <section className="relative bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white py-32 overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1517495307481-d59b8bf8b80e?auto=format&fit=crop&q=80"
-          alt="Reiki Healing"
+          alt="Yoga Healing"
           className="absolute inset-0 opacity-20 object-cover"
           width={1920}
           height={1080}
           priority
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">Reiki Healing</h1>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6">Yoga Healing</h1>
           <p className="text-xl md:text-2xl text-[#E8DED1] max-w-3xl mx-auto mb-10">
-            Experience the gentle power of Reiki – a practice that restores balance and promotes inner peace.
+            Experience the gentle power of Yoga – a practice that restores balance and promotes inner peace.
           </p>
           <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg">
             <div className="relative flex-1">
@@ -208,19 +210,19 @@ const Reiki = () => {
         </div>
       </section>
 
-      {/* About Reiki Section */}
+      {/* About Yoga Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-12 items-center">
           <div className="md:w-1/2">
-            <h2 className="text-3xl font-bold text-[#4A6670] mb-4">What is Reiki?</h2>
+            <h2 className="text-3xl font-bold text-[#4A6670] mb-4">What is Yoga?</h2>
             <p className="text-[#7C9A92] text-lg leading-relaxed">
-              Reiki is a holistic practice that combines physical postures, breath control, and meditation to promote physical and emotional well-being. Whether you seek calm, clarity, or strength, Reiki offers a gentle path to balance and self-discovery.
+              Yoga is a holistic practice that combines physical postures, breath control, and meditation to promote physical and emotional well-being. Whether you seek calm, clarity, or strength, Yoga offers a gentle path to balance and self-discovery.
             </p>
           </div>
           <div className="md:w-1/2">
             <Image
               src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80"
-              alt="Reiki Practice"
+              alt="Yoga Practice"
               className="rounded-xl shadow-md"
               width={500}
               height={300}
@@ -229,10 +231,10 @@ const Reiki = () => {
         </div>
       </section>
 
-      {/* Benefits of Reiki Section */}
+      {/* Benefits of Yoga Section */}
       <section className="py-16 bg-[#F8F5F1]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">Benefits of Reiki</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">Benefits of Yoga</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { icon: Sparkles, title: "Reduces Stress", desc: "Calms the mind and eases tension." },
@@ -254,7 +256,7 @@ const Reiki = () => {
       {/* Practitioners Grid */}
       <section className="py-16 bg-[#F8F5F1]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-8 text-center">Meet Our Reiki Practitioners</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-8 text-center">Meet Our Yoga Practitioners</h2>
           {filteredSellers.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredSellers.map((seller) => (
@@ -262,7 +264,7 @@ const Reiki = () => {
                   key={seller.useruid}
                   useruid={seller.useruid}
                   name={seller.name || "Unnamed Practitioner"}
-                  title={seller.title || "Reiki Practitioner"}
+                  title={seller.title || "Yoga Practitioner"}
                   image={seller.image || "https://via.placeholder.com/150"}
                   rating={seller.rating || 0}
                   reviews={seller.reviews || 0}
@@ -270,17 +272,18 @@ const Reiki = () => {
                   experience={seller.experience || "N/A"}
                   studentCount={seller.student_count || 0}
                   nextAvailable={seller.next_available || "N/A"}
-                  specialties={seller.specialties || ["Reiki"]}
+                  specialties={seller.specialties || ["Yoga"]}
                   price={seller.price || "N/A"}
                   verified={seller.verified || false}
                   email={seller.email || ""}
                   featured={seller.featured || false} // Added featured prop with fallback
+
                 />
               ))}
             </div>
           ) : (
             <div className="text-center">
-              <p className="text-[#7C9A92] text-lg mb-4">No Reiki practitioners found matching your search.</p>
+              <p className="text-[#7C9A92] text-lg mb-4">No Yoga practitioners found matching your search.</p>
               <p className="text-[#4A6670] text-sm">Try adjusting your filters or check back later for new listings.</p>
             </div>
           )}
@@ -290,7 +293,7 @@ const Reiki = () => {
       {/* Workshops Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">Reiki Workshops & Courses</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">Yoga Workshops & Courses</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {workshops.map((workshop, index) => (
               <div key={index} className="bg-[#F8F5F1] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
@@ -321,10 +324,10 @@ const Reiki = () => {
       {/* Testimonials Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">What People Say About Reiki</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">What People Say About Yoga</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { content: "Reiki helped me find peace after years of stress. Truly transformative!", author: "Anna S., Zurich" },
+              { content: "Yoga helped me find peace after years of stress. Truly transformative!", author: "Anna S., Zurich" },
               { content: "My energy levels have never been better. I feel so balanced.", author: "Luc M., Geneva" },
               { content: "A gentle yet powerful experience. I recommend it to everyone!", author: "Clara B., Lausanne" },
             ].map((testimonial, index) => (
@@ -340,7 +343,7 @@ const Reiki = () => {
       {/* Call to Action */}
       <section className="py-16 bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Begin Your Reiki Journey?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Begin Your Yoga Journey?</h2>
           <p className="text-lg text-[#E8DED1] mb-8 max-w-2xl mx-auto">
             Connect with our community of skilled practitioners or share your own healing gifts.
           </p>
@@ -358,4 +361,4 @@ const Reiki = () => {
   );
 };
 
-export default Reiki;
+export default Yoga;
