@@ -5,9 +5,9 @@ import { supabase } from "@terapias/db/supabase";
 import { Search, Filter, Sparkles, Heart, Zap, BookOpen } from "lucide-react";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-import { setSellers } from "../../store/userSlice";
+import { setSellers } from "../../../store/userSlice";
 import UserCard from "@terapias/components/userCard";
-import { RootState, AppDispatch } from "../../store/store";
+import { RootState, AppDispatch } from "../../../store/store";
 
 type Seller = {
   useruid: string;
@@ -33,7 +33,7 @@ type Seller = {
   specialties?: string[];
 };
 
-const Yoga = () => {
+const astrology = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const dispatch = useDispatch<AppDispatch>();
@@ -42,27 +42,27 @@ const Yoga = () => {
   useEffect(() => {
     const fetchSellers = async () => {
       try {
-        // Passo 1: Buscar o therapy_id de "Yoga"
+        // Passo 1: Buscar o therapy_id de "astrology"
         const { data: therapyData, error: therapyError } = await supabase
           .from("therapies")
           .select("id")
-          .eq("name", "Yoga")
+          .eq("name", "astrology")
           .single();
 
         if (therapyError || !therapyData) {
-          console.error("Error fetching Yoga therapy ID:", therapyError);
+          console.error("Error fetching astrology therapy ID:", therapyError);
           console.log("Therapy data:", therapyData);
           return;
         }
 
-        const yogaTherapyId = therapyData.id;
-        console.log("Yoga therapy ID:", yogaTherapyId);
+        const astrologyTherapyId = therapyData.id;
+        console.log("astrology therapy ID:", astrologyTherapyId);
 
-        // Passo 2: Buscar terapeutas associados a "Yoga" via seller_therapies
+        // Passo 2: Buscar terapeutas associados a "astrology" via seller_therapies
         const { data: sellerTherapiesData, error: sellerTherapiesError } = await supabase
           .from("seller_therapies")
           .select("seller_id")
-          .eq("therapy_id", yogaTherapyId);
+          .eq("therapy_id", astrologyTherapyId);
 
         if (sellerTherapiesError || !sellerTherapiesData) {
           console.error("Error fetching seller_therapies:", sellerTherapiesError);
@@ -71,7 +71,7 @@ const Yoga = () => {
         }
 
         const sellerIds = sellerTherapiesData.map((st) => st.seller_id);
-        console.log("Seller IDs with Yoga:", sellerIds);
+        console.log("Seller IDs with astrology:", sellerIds);
 
         // Passo 3: Buscar detalhes dos terapeutas em seller
         const { data: sellersData, error: sellersError } = await supabase
@@ -109,7 +109,7 @@ const Yoga = () => {
         // Passo 4: Adicionar especialidades (opcional, mas útil para consistência)
         const sellersWithSpecialties = sellersData.map((seller) => ({
           ...seller,
-          specialties: ["Yoga"], // Como já filtramos por Yoga, adicionamos diretamente
+          specialties: ["astrology"], // Como já filtramos por astrology, adicionamos diretamente
         }));
 
         console.log("Sellers fetched:", sellersWithSpecialties);
@@ -141,22 +141,22 @@ const Yoga = () => {
 
   const workshops = [
     {
-      title: "Yoga Level I Certification",
-      description: "Learn the basics of Yoga energy healing in this immersive workshop.",
+      title: "astrology Level I Certification",
+      description: "Learn the basics of astrology energy healing in this immersive workshop.",
       date: "March 15, 2025",
       location: "Zurich",
       price: "250 CHF",
     },
     {
-      title: "Advanced Yoga Techniques",
+      title: "Advanced astrology Techniques",
       description: "Deepen your practice with advanced energy channeling methods.",
       date: "April 10, 2025",
       location: "Geneva",
       price: "350 CHF",
     },
     {
-      title: "Yoga Meditation Retreat",
-      description: "A weekend retreat combining Yoga and mindfulness practices.",
+      title: "astrology Meditation Retreat",
+      description: "A weekend retreat combining astrology and mindfulness practices.",
       date: "May 20-22, 2025",
       location: "Lausanne",
       price: "500 CHF",
@@ -169,16 +169,16 @@ const Yoga = () => {
       <section className="relative bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white py-32 overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1517495307481-d59b8bf8b80e?auto=format&fit=crop&q=80"
-          alt="Yoga Healing"
+          alt="astrology Healing"
           className="absolute inset-0 opacity-20 object-cover"
           width={1920}
           height={1080}
           priority
         />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">Yoga Healing</h1>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6">astrology Healing</h1>
           <p className="text-xl md:text-2xl text-[#E8DED1] max-w-3xl mx-auto mb-10">
-            Experience the gentle power of Yoga – a practice that restores balance and promotes inner peace.
+            Experience the gentle power of astrology – a practice that restores balance and promotes inner peace.
           </p>
           <div className="flex flex-col md:flex-row gap-4 max-w-2xl mx-auto bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg">
             <div className="relative flex-1">
@@ -210,19 +210,19 @@ const Yoga = () => {
         </div>
       </section>
 
-      {/* About Yoga Section */}
+      {/* About astrology Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-12 items-center">
           <div className="md:w-1/2">
-            <h2 className="text-3xl font-bold text-[#4A6670] mb-4">What is Yoga?</h2>
+            <h2 className="text-3xl font-bold text-[#4A6670] mb-4">What is astrology?</h2>
             <p className="text-[#7C9A92] text-lg leading-relaxed">
-              Yoga is a holistic practice that combines physical postures, breath control, and meditation to promote physical and emotional well-being. Whether you seek calm, clarity, or strength, Yoga offers a gentle path to balance and self-discovery.
+              astrology is a holistic practice that combines physical postures, breath control, and meditation to promote physical and emotional well-being. Whether you seek calm, clarity, or strength, astrology offers a gentle path to balance and self-discovery.
             </p>
           </div>
           <div className="md:w-1/2">
             <Image
               src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80"
-              alt="Yoga Practice"
+              alt="astrology Practice"
               className="rounded-xl shadow-md"
               width={500}
               height={300}
@@ -231,10 +231,10 @@ const Yoga = () => {
         </div>
       </section>
 
-      {/* Benefits of Yoga Section */}
+      {/* Benefits of astrology Section */}
       <section className="py-16 bg-[#F8F5F1]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">Benefits of Yoga</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">Benefits of astrology</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { icon: Sparkles, title: "Reduces Stress", desc: "Calms the mind and eases tension." },
@@ -256,7 +256,7 @@ const Yoga = () => {
       {/* Practitioners Grid */}
       <section className="py-16 bg-[#F8F5F1]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-8 text-center">Meet Our Yoga Practitioners</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-8 text-center">Meet Our astrology Practitioners</h2>
           {filteredSellers.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredSellers.map((seller) => (
@@ -264,7 +264,7 @@ const Yoga = () => {
                   key={seller.useruid}
                   useruid={seller.useruid}
                   name={seller.name || "Unnamed Practitioner"}
-                  title={seller.title || "Yoga Practitioner"}
+                  title={seller.title || "astrology Practitioner"}
                   image={seller.image || "https://via.placeholder.com/150"}
                   rating={seller.rating || 0}
                   reviews={seller.reviews || 0}
@@ -272,7 +272,7 @@ const Yoga = () => {
                   experience={seller.experience || "N/A"}
                   studentCount={seller.student_count || 0}
                   nextAvailable={seller.next_available || "N/A"}
-                  specialties={seller.specialties || ["Yoga"]}
+                  specialties={seller.specialties || ["astrology"]}
                   price={seller.price || "N/A"}
                   verified={seller.verified || false}
                   email={seller.email || ""}
@@ -283,7 +283,7 @@ const Yoga = () => {
             </div>
           ) : (
             <div className="text-center">
-              <p className="text-[#7C9A92] text-lg mb-4">No Yoga practitioners found matching your search.</p>
+              <p className="text-[#7C9A92] text-lg mb-4">No astrology practitioners found matching your search.</p>
               <p className="text-[#4A6670] text-sm">Try adjusting your filters or check back later for new listings.</p>
             </div>
           )}
@@ -293,7 +293,7 @@ const Yoga = () => {
       {/* Workshops Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">Yoga Workshops & Courses</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">astrology Workshops & Courses</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {workshops.map((workshop, index) => (
               <div key={index} className="bg-[#F8F5F1] rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
@@ -324,10 +324,10 @@ const Yoga = () => {
       {/* Testimonials Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">What People Say About Yoga</h2>
+          <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center">What People Say About astrology</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { content: "Yoga helped me find peace after years of stress. Truly transformative!", author: "Anna S., Zurich" },
+              { content: "astrology helped me find peace after years of stress. Truly transformative!", author: "Anna S., Zurich" },
               { content: "My energy levels have never been better. I feel so balanced.", author: "Luc M., Geneva" },
               { content: "A gentle yet powerful experience. I recommend it to everyone!", author: "Clara B., Lausanne" },
             ].map((testimonial, index) => (
@@ -343,7 +343,7 @@ const Yoga = () => {
       {/* Call to Action */}
       <section className="py-16 bg-gradient-to-br from-[#7C9A92] to-[#4A6670] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Begin Your Yoga Journey?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Begin Your astrology Journey?</h2>
           <p className="text-lg text-[#E8DED1] mb-8 max-w-2xl mx-auto">
             Connect with our community of skilled practitioners or share your own healing gifts.
           </p>
@@ -361,4 +361,4 @@ const Yoga = () => {
   );
 };
 
-export default Yoga;
+export default astrology;

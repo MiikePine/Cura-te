@@ -7,6 +7,10 @@ const nextConfig = {
   experimental: {
     turbo: true, // Desativa Turbopack explicitamente
   },
+//   i18n: {
+//     locales: ["de", "fr", "it", "en"], // Idiomas suportados
+//     defaultLocale: "fr"
+// }
 };
 
 module.exports = nextConfig;
