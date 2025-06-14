@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Menu, X, Plus, Tag, MessageSquare, ArrowUpDown, Users } from "lucide-react";
 import Link from "next/link";
 import forumData from "./forum_static_data.json";
+import Image from "next/image";
 
 // Define types for forum data
 interface ForumPost {
@@ -20,18 +21,13 @@ interface ForumPost {
 }
 
 // Animation variants
-const fadeIn = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
-};
+
 
 const stagger = {
   visible: { transition: { staggerChildren: 0.05 } },
 };
 
-const cardHover = {
-  hover: { y: -4, boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)", transition: { duration: 0.2 } },
-};
+
 
 // Forum categories
 const categories = [
@@ -209,7 +205,7 @@ export default function ForumPage() {
             <motion.div
               initial="hidden"
               animate="visible"
-              variants={fadeIn}
+      
               className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 bg-white p-4 rounded-lg shadow-sm border border-[#E6E6E6]"
             >
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -273,7 +269,7 @@ export default function ForumPage() {
               >
                 {paginatedPosts.length === 0 ? (
                   <motion.div
-                    variants={fadeIn}
+                    
                     className="text-center text-[#7C9A92] text-base py-12"
                   >
                     No posts found. Try adjusting your search or category.
@@ -282,10 +278,10 @@ export default function ForumPage() {
                   paginatedPosts.map((post) => (
                     <motion.div
                       key={post.id}
-                      variants={fadeIn}
+               
                       whileHover="hover"
                       className="bg-white rounded-lg shadow-sm border border-[#E6E6E6] overflow-hidden transition-all"
-                      style={{ variants: cardHover }}
+            
                     >
                       <Link href={`/forum/post/${post.id}`} className="block p-5">
                         <div className="flex items-start gap-4">
@@ -294,7 +290,7 @@ export default function ForumPage() {
                             onClick={(e) => e.stopPropagation()}
                             aria-label={`View ${post.username}'s profile`}
                           >
-                            <img
+                            <Image
                               src={getAvatarUrl(post.username)}
                               alt={post.username}
                               className="h-12 w-12 rounded-full hover:ring-2 hover:ring-[#E6B17E] transition-all flex-shrink-0"
@@ -345,7 +341,7 @@ export default function ForumPage() {
               <motion.div
                 initial="hidden"
                 animate="visible"
-                variants={fadeIn}
+                
                 className="flex justify-center gap-2 mt-8"
               >
                 <button

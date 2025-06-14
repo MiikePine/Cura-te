@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { Heart, MessageSquare, Share2, Search, Menu, X, Tag, Users, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import forumData from "../forum/forum_static_data.json";
+import Image from "next/image";
 
 // Define types for feed data
 interface FeedPost {
@@ -17,6 +18,7 @@ interface FeedPost {
   likes_count: number;
   comments_count: number;
   image_url?: string;
+  liked?: boolean;
   comments?: FeedComment[];
 }
 
@@ -30,19 +32,17 @@ interface FeedComment {
   likes_count: number;
 }
 
-// Animation variants
-const fadeIn = {
+// Animation variants with explicit type
+const fadeIn: Variants = {
   hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" as const } },
 };
 
-const stagger = {
+const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.05 } },
 };
 
-const cardHover = {
-  hover: { y: -4, boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)", transition: { duration: 0.2 } },
-};
+
 
 // Categories for filtering
 const categories = [
@@ -59,7 +59,7 @@ const categories = [
 const getAvatarUrl = (username: string) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=7C9A92&color=fff`;
 
-// Mock image URLs for some posts (since forumData doesn't include images)
+// Mock image URLs for some posts
 const mockImages = [
   "https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&h=337.5&q=80",
   "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?auto=format&fit=crop&w=600&h=337.5&q=80",
@@ -73,6 +73,7 @@ export default function FeedPage() {
       comments_count: post.replies_count,
       likes_count: Math.floor(Math.random() * 100),
       image_url: idx % 3 === 0 ? mockImages[idx % mockImages.length] : undefined,
+      liked: false,
       comments: forumData.forum_replies
         .filter((r) => r.post_id === post.id)
         .slice(0, 2)
@@ -137,6 +138,7 @@ export default function FeedPage() {
       created_at: new Date().toISOString(),
       likes_count: 0,
       comments_count: 0,
+      liked: false,
       comments: [],
     };
     setPosts([newPost, ...posts]);
@@ -145,19 +147,19 @@ export default function FeedPage() {
   };
 
   return (
-    <div className="bg-[#F7F4F0] font-sans min-h-screen">
-      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar */}
+    <div className="bg-[#F7F4F0] min-h-screen font-sans">
+      <div className="max-w-[90rem] mx-auto px-4 sm:px-6 md:px-4 lg:px-6 pt-20 pb-12">
+        <div className="grid grid-cols-1 md:grid-cols-[256px_1fr] lg:grid-cols-[320px_1fr] gap-4">
+          {/* Mobile Sidebar */}
           <motion.aside
+            className="md:hidden fixed top-16 left-0 w-64 bg-white shadow-md z-50 h-[calc(100vh-4rem)] overflow-y-auto"
             initial={{ x: -300 }}
             animate={{ x: isSidebarOpen ? 0 : -300 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed top-16 left-0 w-64 bg-white shadow-md z-40 h-[calc(100vh-4rem)] overflow-y-auto lg:sticky lg:top-20 lg:w-80 lg:flex lg:flex-col lg:shadow-none lg:translate-x-0 lg:bg-transparent"
           >
             <div className="p-6 space-y-6">
               {/* Mobile Search */}
-              <div className="relative lg:hidden">
+              <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#7C9A92]" />
                 <input
                   type="text"
@@ -229,21 +231,85 @@ export default function FeedPage() {
             </div>
           </motion.aside>
 
+          {/* Desktop Sidebar */}
+          <aside
+            className="hidden md:block sticky top-20 w-64 lg:w-80 bg-white shadow-sm h-[calc(100vh-5rem)] overflow-y-auto z-10"
+          >
+            <div className="p-6 space-y-6">
+              {/* Community Stats */}
+              <div className="bg-[#7C9A92]/10 rounded-lg p-4">
+                <h3 className="text-sm font-semibold text-[#4A6670] mb-2 flex items-center gap-2">
+                  <Users className="h-4 w-4" /> Community
+                </h3>
+                <p className="text-xs text-[#7C9A92]">
+                  {posts.length} posts • {[...new Set(posts.map((post) => post.user_id))].length} members
+                </p>
+              </div>
+              {/* Categories */}
+              <div>
+                <h3 className="text-sm font-semibold text-[#4A6670] mb-2 flex items-center gap-2">
+                  <Tag className="h-4 w-4" /> Topics
+                </h3>
+                <ul className="space-y-1">
+                  {categories.map((category) => (
+                    <li key={category}>
+                      <button
+                        onClick={() => setSelectedCategory(category)}
+                        className={`w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          selectedCategory === category
+                            ? "bg-[#7C9A92] text-white"
+                            : "text-[#4A6670] hover:bg-[#7C9A92]/10"
+                        }`}
+                        aria-current={selectedCategory === category ? "true" : "false"}
+                      >
+                        {category}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* Trending Posts */}
+              <div>
+                <h3 className="text-sm font-semibold text-[#4A6670] mb-2">Trending</h3>
+                <ul className="space-y-3">
+                  {posts
+                    .sort((a, b) => b.likes_count - a.likes_count)
+                    .slice(0, 4)
+                    .map((post) => (
+                      <li key={post.id}>
+                        <Link
+                          href={`/feed/post/${post.id}`}
+                          className="text-sm text-[#4A6670] hover:text-[#E6B17E] line-clamp-2 transition-colors"
+                        >
+                          {post.content.substring(0, 50)}...
+                        </Link>
+                        <p className="text-xs text-[#7C9A92]/80 mt-1">
+                          {post.likes_count} likes • {formatDate(post.created_at)}
+                        </p>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </div>
+          </aside>
+
           {/* Main Content Area */}
-          <main className="flex-1 max-w-2xl mx-auto">
+          <main className="flex flex-col w-full max-w-2xl mx-auto gap-6">
             {/* New Post Form */}
             <motion.div
               initial="hidden"
               animate="visible"
               variants={fadeIn}
-              className="bg-white rounded-lg shadow-sm border border-[#E6E6E6] p-4 mb-6"
+              className="bg-white rounded-lg shadow-sm border border-[#E6E6E6] p-4"
             >
               <form onSubmit={handleNewPost}>
                 <div className="flex items-start gap-3">
-                  <img
+                  <Image
                     src={getAvatarUrl("CurrentUser")}
                     alt="Current User"
                     className="h-10 w-10 rounded-full flex-shrink-0"
+                    width={40}
+                    height={40}
                   />
                   <div className="flex-1">
                     <textarea
@@ -287,9 +353,9 @@ export default function FeedPage() {
               initial="hidden"
               animate="visible"
               variants={fadeIn}
-              className="flex items-center gap-4 mb-6"
+              className="flex items-center gap-4"
             >
-              <div className="relative flex-1 max-w-md hidden sm:block">
+              <div className="relative flex-1 hidden sm:block">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[#7C9A92]" />
                 <input
                   type="text"
@@ -302,7 +368,7 @@ export default function FeedPage() {
               </div>
               <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-2 text-[#7C9A92] hover:text-[#E6B17E] lg:hidden"
+                className="p-2 text-[#7C9A92] hover:text-[#E6B17E] md:hidden"
                 aria-label={isSidebarOpen ? "Close menu" : "Open menu"}
               >
                 {isSidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -326,15 +392,17 @@ export default function FeedPage() {
                       variants={fadeIn}
                       whileHover="hover"
                       className="bg-white rounded-lg shadow-sm border border-[#E6E6E6] overflow-hidden transition-all"
-                      style={{ variants: cardHover }}
+                 
                     >
                       <Link href={`/feed/post/${post.id}`} className="block">
                         <div className="p-4">
                           <div className="flex items-center gap-3 mb-3">
-                            <img
+                            <Image
                               src={getAvatarUrl(post.username)}
                               alt={post.username}
                               className="h-10 w-10 rounded-full"
+                              width={40}
+                              height={40}
                             />
                             <div>
                               <span className="text-sm font-semibold text-[#4A6670] hover:text-[#E6B17E]">
@@ -347,7 +415,7 @@ export default function FeedPage() {
                           </div>
                           <p className="text-sm text-[#4A6670] mb-3 line-clamp-4">{post.content}</p>
                           {post.image_url && (
-                            <img
+                            <Image
                               src={post.image_url}
                               alt="Post image"
                               className="w-full h-auto rounded-lg object-cover"
@@ -392,10 +460,12 @@ export default function FeedPage() {
                           <div className="space-y-3">
                             {post.comments.map((comment) => (
                               <div key={comment.id} className="flex items-start gap-2">
-                                <img
+                                <Image
                                   src={getAvatarUrl(comment.username)}
                                   alt={comment.username}
                                   className="h-8 w-8 rounded-full"
+                                  width={32}
+                                  height={32}
                                 />
                                 <div className="flex-1">
                                   <div className="bg-[#F7F4F0] rounded-lg p-2">

@@ -33,7 +33,7 @@ type Seller = {
   specialties?: string[];
 };
 
-const reflexology = () => {
+const Reflexology = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const dispatch = useDispatch<AppDispatch>();
@@ -361,4 +361,4 @@ const reflexology = () => {
   );
 };
 
-export default reflexology;
+export default Reflexology;

@@ -33,7 +33,7 @@ type Seller = {
   specialties?: string[];
 };
 
-const tantra = () => {
+const Tantra = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const dispatch = useDispatch<AppDispatch>();
@@ -361,4 +361,4 @@ const tantra = () => {
   );
 };
 
-export default tantra;
+export default Tantra;

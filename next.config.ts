@@ -1,16 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   images: {
-    domains: ["images.unsplash.com", "via.placeholder.com", "images.pexels.com","iahnomwrnwnbuyswfzas.supabase.co", // Adiciona o domínio do Supabase
+    domains: [
+      "images.unsplash.com",
+      "via.placeholder.com",
+      "images.pexels.com",
+      "iahnomwrnwnbuyswfzas.supabase.co",
+      "ui-avatars.com",
     ],
   },
-  experimental: {
-    turbo: true, // Desativa Turbopack explicitamente
-  },
-//   i18n: {
-//     locales: ["de", "fr", "it", "en"], // Idiomas suportados
-//     defaultLocale: "fr"
-// }
 };
 
-module.exports = nextConfig;
+export default nextConfig;

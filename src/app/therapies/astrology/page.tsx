@@ -33,7 +33,7 @@ type Seller = {
   specialties?: string[];
 };
 
-const astrology = () => {
+const Astrology = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const dispatch = useDispatch<AppDispatch>();
@@ -361,4 +361,4 @@ const astrology = () => {
   );
 };
 
-export default astrology;
+export default Astrology;

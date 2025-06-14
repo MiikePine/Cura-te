@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -10,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSellers } from "../../store/userSlice";
 import { RootState, AppDispatch } from "../../store/store";
 import UserCard from "@terapias/components/userCard";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { therapies } from "../../data/homeData";
 
 // Lista de cantões suíços
@@ -22,21 +21,31 @@ const swissCantons = [
 ];
 
 // Variantes de animação
-const fadeIn = {
+const fadeIn: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
 };
 
-const dropdownAnimation = {
+const dropdownAnimation: Variants = {
   hidden: { opacity: 0, y: -10 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-  exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" as const } },
+  exit: { opacity: 0, y: -10, transition: { duration: 0.2, ease: "easeOut" as const } },
 };
 
-const stagger = {
+const stagger: Variants = {
   visible: { transition: { staggerChildren: 0.2 } },
 };
 
+// Interface para os dados brutos do Supabase
+interface SupabaseSellerTherapy {
+  therapy: {
+    name: string;
+  } | {
+    name: string;
+  }[];
+}
+
+// Interface para Seller ajustada
 type Seller = {
   useruid: string;
   name: string | null;
@@ -58,6 +67,7 @@ type Seller = {
   featured: boolean | null;
   student_count: number | null;
   session_types: { name: string; duration: string; price: string; description: string }[] | null;
+  seller_therapies: SupabaseSellerTherapy[] | null;
   specialties: string[];
 };
 
@@ -111,7 +121,9 @@ export default function Practitioners() {
         // Mapear especialidades
         const sellersWithSpecialties = sellersData.map((seller) => ({
           ...seller,
-          specialties: seller.seller_therapies?.map((st: { therapy: { name: string } }) => st.therapy.name) || [],
+          specialties: seller.seller_therapies?.map((st: SupabaseSellerTherapy) => 
+            Array.isArray(st.therapy) ? st.therapy.map(t => t.name).filter(Boolean) : st.therapy.name
+          ).flat() || [],
         }));
 
         dispatch(setSellers(sellersWithSpecialties));

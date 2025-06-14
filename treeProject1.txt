@@ -1,0 +1,83 @@
+.
+├── .DS_Store
+├── .env
+├── .gitignore
+├── @
+│   ├── components
+│   │   └── ui
+│   ├── hooks
+│   │   └── use-toast.ts
+│   └── lib
+│       └── utils.ts
+├── components.json
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── public
+│   ├── .DS_Store
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   ├── window.svg
+│   └── zenImage.jpg
+├── README.md
+├── scripts
+│   ├── .env
+│   └── populateSellers.js
+├── src
+│   ├── app
+│   │   ├── blog
+│   │   ├── eventos
+│   │   ├── feed
+│   │   ├── forum
+│   │   ├── globals.css
+│   │   ├── layout
+│   │   ├── layout.tsx
+│   │   ├── login
+│   │   ├── myaccount
+│   │   ├── page.tsx
+│   │   ├── practitioners
+│   │   ├── profile
+│   │   ├── register
+│   │   └── therapies
+│   ├── components
+│   │   ├── CallToAction.tsx
+│   │   ├── FeaturedPractitioners.tsx
+│   │   ├── hero.tsx
+│   │   ├── HowItWorks.tsx
+│   │   ├── MapLandingPage.tsx
+│   │   ├── register
+│   │   ├── RegistrationStepper.tsx
+│   │   ├── Stats.tsx
+│   │   ├── Testimonials.tsx
+│   │   ├── TherapiesGrid.tsx
+│   │   └── userCard.tsx
+│   ├── data
+│   │   └── homeData.tsx
+│   ├── db
+│   │   ├── dbFetch.tsx
+│   │   └── supabase.tsx
+│   ├── locales
+│   │   ├── de.json
+│   │   ├── en.json
+│   │   ├── fr.json
+│   │   └── it.json
+│   ├── store
+│   │   ├── store.ts
+│   │   ├── types.ts
+│   │   └── userSlice.tsx
+│   └── to do
+├── supabase
+│   ├── .temp
+│   │   └── cli-latest
+│   └── database.types.ts
+├── tailwind.config.ts
+├── treeProject.txt
+├── treeProject1.txt
+└── tsconfig.json
+
+29 directories, 52 files

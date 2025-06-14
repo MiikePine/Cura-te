@@ -310,7 +310,7 @@ export default function MapLandingPage() {
           const popupContent = `
             <div class="bg-white rounded-lg shadow-md p-3 w-64 border border-[#E8DED1]">
               <div class="flex items-center space-x-3">
-                <img 
+                <Image 
                   src="${seller.image || 'https://via.placeholder.com/150'}" 
                   alt="${seller.name}" 
                   class="h-12 w-12 rounded-full object-cover border-2 border-[#7C9A92]"
