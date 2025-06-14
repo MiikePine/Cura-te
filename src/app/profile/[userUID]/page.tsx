@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -15,6 +14,7 @@ import {
   Award,
   Feather,
   Sparkles,
+  Phone,
 } from "lucide-react";
 import { supabase } from "@terapias/db/supabase";
 import Image from "next/image";
@@ -35,13 +35,16 @@ interface SessionType {
   description: string;
 }
 
-interface RawSeller extends SellerRow {
-  seller_therapies: SellerTherapy[];
-}
-
-interface Seller extends Omit<RawSeller, "seller_therapies" | "session_types"> {
+interface Seller extends SellerRow {
   specialties: string[];
   session_types: SessionType[] | null;
+  consultation_types: string[];
+  target_publics: string[];
+  consultation_locations: string[];
+  siret: string;
+  insured: boolean;
+  website: string;
+  phone: string;
 }
 
 const fadeIn = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
@@ -74,7 +77,6 @@ export default function SellerProfile() {
             title,
             image,
             rating,
-            reviews,
             location,
             languages,
             experience,
@@ -90,6 +92,7 @@ export default function SellerProfile() {
             session_types,
             lat,
             lng,
+            phone,
             seller_therapies (
               therapy:therapies (name)
             )
@@ -103,13 +106,21 @@ export default function SellerProfile() {
           setError("No practitioner found with this ID");
           setSeller(null);
         } else {
-          const rawSeller = data as unknown as RawSeller;
+          const rawSeller = data as unknown as SellerRow & { seller_therapies: SellerTherapy[] };
           const sellerWithSpecialties: Seller = {
             ...rawSeller,
             specialties: rawSeller.seller_therapies?.map((st) => st.therapy.name) || [],
             session_types: Array.isArray(rawSeller.session_types)
               ? (rawSeller.session_types as unknown as SessionType[])
               : null,
+            // Fictitious data for fields not in schema
+            consultation_types: ["Individual", "Collective/Groups", "Workshops/Conferences"],
+            target_publics: ["Adults", "Adolescents", "Children", "Seniors"],
+            consultation_locations: ["In-office", "Home visits"],
+            siret: "80035103300017",
+            insured: true,
+            website: "https://example.com",
+            phone: rawSeller.phone ? String(rawSeller.phone) : "+41 123 456 789",
           };
           setSeller(sellerWithSpecialties);
         }
@@ -153,27 +164,31 @@ export default function SellerProfile() {
         variants={fadeIn}
         className="relative bg-gradient-to-b from-[#7C9A92] to-[#4A6670] text-white py-24 overflow-hidden"
       >
-        <Image
-          src={seller.image || "https://images.unsplash.com/photo-1517495307481-d59b8bf8b80e?auto=format&fit=crop&q=80"}
-          alt="Background"
-          className="absolute inset-0 opacity-20 object-cover"
-          width={1920}
-          height={1080}
-          priority
-        />
+        <motion.div variants={fadeIn}>
+          <Image
+            src={seller.image || "https://images.unsplash.com/photo-1517495307481-d59b8bf8b80e?auto=format&fit=crop&q=80"}
+            alt="Background"
+            className="absolute inset-0 opacity-20 object-cover"
+            width={1920}
+            height={1080}
+            priority
+          />
+        </motion.div>
         <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link href="/" className="text-[#E8DED1] hover:text-[#E6B17E] flex items-center mb-6 text-sm">
             <span className="mr-2">←</span> Back to Home
           </Link>
           <motion.div variants={stagger} className="flex flex-col md:flex-row items-center gap-8">
             <motion.div variants={scaleIn} className="relative">
-              <Image
-                src={seller.image || "https://via.placeholder.com/150"}
-                alt={seller.name || "Profile picture"}
-                width={160}
-                height={160}
-                className="w-40 h-40 rounded-full object-cover border-4 border-[#E8DED1] shadow-lg"
-              />
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}>
+                <Image
+                  src={seller.image || "https://via.placeholder.com/150"}
+                  alt={seller.name || "Profile picture"}
+                  width={160}
+                  height={160}
+                  className="w-40 h-40 rounded-full object-cover border-4 border-[#E8DED1] shadow-lg"
+                />
+              </motion.div>
               {seller.verified && (
                 <div className="absolute bottom-0 right-0 bg-[#E6B17E] text-white p-2 rounded-full shadow-md">
                   <ShieldCheck className="h-5 w-5" />
@@ -209,13 +224,34 @@ export default function SellerProfile() {
                 </div>
               </motion.div>
               <motion.div variants={fadeIn} className="flex gap-4 justify-center md:justify-start">
-                <Link
-                  href="#message"
-                  className="inline-flex items-center px-6 py-3 bg-[#F8F5F1] text-[#4A6670] rounded-full hover:bg-[#E8DED1] transition-all duration-300 text-sm font-medium shadow-sm"
-                >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Message
-                </Link>
+                {seller.email && (
+                  <Link
+                    href={`mailto:${seller.email}`}
+                    className="inline-flex items-center px-6 py-3 bg-[#F8F5F1] text-[#4A6670] rounded-full hover:bg-[#E8DED1] transition-all duration-300 text-sm font-medium shadow-sm"
+                  >
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Email
+                  </Link>
+                )}
+                {seller.phone && (
+                  <Link
+                    href={`tel:${seller.phone}`}
+                    className="inline-flex items-center px-6 py-3 bg-[#F8F5F1] text-[#4A6670] rounded-full hover:bg-[#E8DED1] transition-all duration-300 text-sm font-medium shadow-sm"
+                  >
+                    <Phone className="h-4 w-4 mr-2" />
+                    Call
+                  </Link>
+                )}
+                {seller.website && (
+                  <Link
+                    href={seller.website}
+                    target="_blank"
+                    className="inline-flex items-center px-6 py-3 bg-[#F8F5F1] text-[#4A6670] rounded-full hover:bg-[#E8DED1] transition-all duration-300 text-sm font-medium shadow-sm"
+                  >
+                    <Globe className="h-4 w-4 mr-2" />
+                    Website
+                  </Link>
+                )}
                 <Link
                   href="#book"
                   className="inline-flex items-center px-6 py-3 bg-[#E6B17E] text-white rounded-full hover:bg-[#D9A066] transition-all duration-300 text-sm font-medium shadow-sm"
@@ -243,6 +279,24 @@ export default function SellerProfile() {
                 <p className="text-[#7C9A92] text-lg leading-relaxed">{seller.teaching_style}</p>
               </div>
             )}
+            <div className="mt-8">
+              <h3 className="text-xl font-medium text-[#4A6670] mb-2">Session Details</h3>
+              {seller.consultation_types && seller.consultation_types.length > 0 && (
+                <p className="text-[#7C9A92] text-lg mb-2">
+                  <strong>Types of Consultation:</strong> {seller.consultation_types.join(", ")}
+                </p>
+              )}
+              {seller.target_publics && seller.consultation_types.length > 0 && (
+                <p className="text-[#7C9A92] text-lg mb-2">
+                  <strong>Target Publics:</strong> {seller.target_publics.join(", ")}
+                </p>
+              )}
+              {seller.consultation_locations && seller.consultation_locations.length > 0 && (
+                <p className="text-[#7C9A92] text-lg mb-2">
+                  <strong>Consultation Locations:</strong> {seller.consultation_locations.join(", ")}
+                </p>
+              )}
+            </div>
           </motion.section>
 
           {/* Specialties Section */}
@@ -334,6 +388,18 @@ export default function SellerProfile() {
                     <p className="text-[#7C9A92] text-sm">Languages</p>
                   </div>
                 </motion.div>
+              )}
+            </div>
+            <div className="mt-6">
+              {seller.siret && (
+                <p className="text-[#7C9A92] text-lg">
+                  <strong>SIRET:</strong> {seller.siret}
+                </p>
+              )}
+              {seller.insured && (
+                <p className="text-[#7C9A92] text-lg mt-2">
+                  Insured for professional liability
+                </p>
               )}
             </div>
           </motion.section>

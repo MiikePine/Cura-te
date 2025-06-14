@@ -1,12 +1,14 @@
+
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // Standard import, requires framer-motion@^11.11.9
 import { Heart, MessageSquare, Share2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import forumData from "../../../forum/forum_static_data.json";
 import Image from "next/image";
 
+// Define interfaces for post and comment data
 interface FeedPost {
   id: string;
   user_id: string;
@@ -31,23 +33,31 @@ interface FeedComment {
   liked?: boolean;
 }
 
+// Animation variants
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
 
 const stagger = {
   visible: { transition: { staggerChildren: 0.1 } },
 };
 
+// Generate avatar URL
 const getAvatarUrl = (username: string) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=7C9A92&color=fff`;
 
+// Mock image URLs
 const mockImages = [
   "https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&h=337.5&q=80",
   "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?auto=format&fit=crop&w=600&h=337.5&q=80",
   "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&h=337.5&q=80",
 ];
 
-interface PostDetailPageProps {
+// Define props type for dynamic route
+type PostDetailPageProps = {
   params: { id: string };
-}
+};
 
 export default function PostDetailPage({ params }: PostDetailPageProps) {
   const postData = forumData.forum_posts.find((p) => p.id === params.id);
@@ -122,7 +132,8 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
   return (
     <section className="min-h-screen bg-[#F7F4F0] font-sans py-12">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8">
-        <motion.div initial="hidden" animate="visible" className="mb-6">
+        {/* Navigation */}
+        <motion.div initial="hidden" animate="visible" variants={fadeIn} className="mb-6">
           <Link
             href="/feed"
             className="flex items-center text-[#E6B17E] hover:text-[#D9A066] text-sm font-medium transition-colors"
@@ -132,10 +143,11 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
           </Link>
         </motion.div>
 
+        {/* Post Content */}
         <motion.div
           initial="hidden"
           animate="visible"
-  
+          variants={fadeIn}
           className="bg-white rounded-lg shadow-sm border border-[#E6E6E6] overflow-hidden"
         >
           <div className="p-4">
@@ -173,6 +185,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
                 className={`flex items-center gap-1 text-sm ${
                   post.liked ? "text-[#E6B17E]" : "text-[#7C9A92]"
                 } hover:text-[#E6B17E] transition-colors`}
+                aria-label={post.liked ? "Unlike post" : "Like post"}
               >
                 <Heart className={`h-4 w-4 ${post.liked ? "fill-current" : ""}`} />
                 {post.likes_count}
@@ -183,6 +196,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
               </span>
               <button
                 className="flex items-center gap-1 text-sm text-[#7C9A92] hover:text-[#E6B17E] transition-colors"
+                aria-label="Share post"
               >
                 <Share2 className="h-4 w-4" />
                 Share
@@ -191,11 +205,10 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
           </div>
         </motion.div>
 
+        {/* Comments Section */}
         <motion.div initial="hidden" animate="visible" variants={stagger} className="mt-6">
-          <h2 className="text-lg font-semibold text-[#4A6670] mb-4">
-            Comments ({post.comments_count})
-          </h2>
-
+          <h2 className="text-lg font-semibold text-[#4A6670] mb-4">Comments ({post.comments_count})</h2>
+          {/* New Comment Form */}
           <form onSubmit={handleNewComment} className="mb-6">
             <div className="flex items-start gap-3">
               <Image
@@ -211,6 +224,7 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
                   className="w-full h-16 p-2 bg-[#F7F4F0] rounded-lg text-sm text-[#4A6670] placeholder-[#7C9A92]/70 focus:outline-none focus:ring-2 focus:ring-[#E6B17E] resize-none"
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
+                  aria-label="Write a comment"
                 />
                 <div className="flex justify-end mt-2">
                   <button
@@ -224,12 +238,12 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
               </div>
             </div>
           </form>
-
+          {/* Comments List */}
           {comments.length === 0 ? (
             <div className="text-[#7C9A92] text-base">No comments yet. Be the first to comment!</div>
           ) : (
             comments.map((comment) => (
-              <motion.div key={comment.id} className="flex items-start gap-3 mb-4">
+              <motion.div key={comment.id} variants={fadeIn} className="flex items-start gap-3 mb-4">
                 <Image
                   src={getAvatarUrl(comment.username)}
                   alt={comment.username}
@@ -248,13 +262,14 @@ export default function PostDetailPage({ params }: PostDetailPageProps) {
                       className={`text-xs ${
                         comment.liked ? "text-[#E6B17E]" : "text-[#7C9A92]"
                       } hover:text-[#E6B17E] transition-colors`}
+                      aria-label={comment.liked ? "Unlike comment" : "Like comment"}
                     >
                       Like • {comment.likes_count}
                     </button>
                     <span className="text-xs text-[#7C9A92]">{formatDate(comment.created_at)}</span>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))
           )}
         </motion.div>

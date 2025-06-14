@@ -1,0 +1,336 @@
+{
+    "feed_posts": [
+      {
+        "id": "weekly-question",
+        "user_id": "admin",
+        "username": "HealingPath",
+        "content": "🌿 Pergunta da Semana: Qual é a sua dica de autocuidado para o inverno suíço? Compartilhe suas ideias abaixo!",
+        "category": "General Wellness",
+        "created_at": "2025-06-14T10:00:00Z",
+        "likes_count": 10,
+        "comments_count": 5,
+        "is_pinned": true
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440100",
+        "user_id": "550e8400-e29b-41d4-a716-446655440000",
+        "username": "Sophie_Yoga",
+        "content": "Hi everyone! I’m new to Zurich and looking for beginner-friendly yoga studios. Any recommendations for classes in English or German? I’d love to hear about your experiences!",
+        "category": "Yoga",
+        "created_at": "2025-06-01T10:00:00Z",
+        "likes_count": 45,
+        "comments_count": 3,
+        "image_url": "https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&h=337.5&q=80"
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440101",
+        "user_id": "550e8400-e29b-41d4-a716-446655440001",
+        "username": "Reiki_Laura",
+        "content": "Bonjour! I’m considering trying Reiki in Geneva. Has anyone had a session here? What should I expect, and are there certified practitioners you recommend?",
+        "category": "Reiki",
+        "created_at": "2025-06-02T12:15:00Z",
+        "likes_count": 30,
+        "comments_count": 2
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440102",
+        "user_id": "550e8400-e29b-41d4-a716-446655440002",
+        "username": "Event_Organizer",
+        "content": "Hello community! I’m hosting a weekend meditation retreat in Vaud on June 20–22. Focus on mindfulness and nature. Anyone interested? DM for details!",
+        "category": "Events & Workshops",
+        "created_at": "2025-06-03T08:00:00Z",
+        "likes_count": 60,
+        "comments_count": 2,
+        "image_url": "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?auto=format&fit=crop&w=600&h=337.5&q=80"
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440103",
+        "user_id": "550e8400-e29b-41d4-a716-446655440003",
+        "username": "Expat_Emma",
+        "content": "Hi all, I moved to Lausanne from the US and feel a bit isolated. Are there wellness groups or yoga classes where I can meet people? Preferably in English!",
+        "category": "Expat Community",
+        "created_at": "2025-06-04T16:00:00Z",
+        "likes_count": 25,
+        "comments_count": 3
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440104",
+        "user_id": "550e8400-e29b-41d4-a716-446655440004",
+        "username": "Wellness_Marc",
+        "content": "Hallo! I work long hours in Zurich and struggle to stay mindful. Any tips for incorporating meditation or qigong into a busy schedule? Danke!",
+        "category": "General Wellness",
+        "created_at": "2025-06-05T09:30:00Z",
+        "likes_count": 35,
+        "comments_count": 2
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440105",
+        "user_id": "550e8400-e29b-41d4-a716-446655440005",
+        "username": "Yoga_Lena",
+        "content": "I’m looking to reduce stress through yoga in Bern. Can anyone compare Hatha and Vinyasa classes? Are there studios offering both in English?",
+        "category": "Yoga",
+        "created_at": "2025-06-06T11:00:00Z",
+        "likes_count": 40,
+        "comments_count": 3,
+        "image_url": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&h=337.5&q=80"
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440106",
+        "user_id": "550e8400-e29b-41d4-a716-446655440006",
+        "username": "Mark_Zen",
+        "content": "Hi all! I need a meditation app that fits a hectic Zurich work schedule. Any recommendations for apps with short, effective sessions?",
+        "category": "Meditation",
+        "created_at": "2025-06-07T14:00:00Z",
+        "likes_count": 20,
+        "comments_count": 2
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440107",
+        "user_id": "550e8400-e29b-41d4-a716-446655440007",
+        "username": "Clara_Holistic",
+        "content": "I’m curious about sound healing workshops in Basel. Has anyone attended one? What’s the experience like, and are there regular events?",
+        "category": "Events & Workshops",
+        "created_at": "2025-06-08T09:00:00Z",
+        "likes_count": 55,
+        "comments_count": 2
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440108",
+        "user_id": "550e8400-e29b-41d4-a716-446655440008",
+        "username": "Geneva_Healer",
+        "content": "I’m thinking of getting Reiki Level 1 certified in Geneva. Is it worth the investment? Any tips on choosing a good teacher?",
+        "category": "Reiki",
+        "created_at": "2025-06-09T13:00:00Z",
+        "likes_count": 30,
+        "comments_count": 3
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440109",
+        "user_id": "550e8400-e29b-41d4-a716-446655440009",
+        "username": "Sophie_Wellness",
+        "content": "Hello! I’m an expat in Lucerne looking for wellness events (yoga, meditation, etc.) in English. Any suggestions for local groups or events?",
+        "category": "Expat Community",
+        "created_at": "2025-06-10T10:30:00Z",
+        "likes_count": 28,
+        "comments_count": 2
+      }
+    ],
+    "feed_comments": [
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440200",
+        "post_id": "550e8400-e29b-41d4-a716-446655440100",
+        "user_id": "550e8400-e29b-41d4-a716-446655440005",
+        "username": "Yoga_Lena",
+        "content": "Welcome to Zurich! I recommend Studio Y in District 3; they have beginner classes in English every Wednesday. The teacher, Anna, is amazing!",
+        "created_at": "2025-06-02T08:30:00Z",
+        "likes_count": 15
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440201",
+        "post_id": "550e8400-e29b-41d4-a716-446655440100",
+        "user_id": "550e8400-e29b-41d4-a716-446655440006",
+        "username": "Mark_Zen",
+        "content": "Try Flow Yoga near the lake. Their beginner sessions are in German, but the instructors are super welcoming. Great vibe!",
+        "created_at": "2025-06-02T15:00:00Z",
+        "likes_count": 10
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440202",
+        "post_id": "550e8400-e29b-41d4-a716-446655440100",
+        "user_id": "550e8400-e29b-41d4-a716-446655440007",
+        "username": "Clara_Holistic",
+        "content": "I second Studio Y! They also offer online classes if you want to start at home. Check their website for the schedule.",
+        "created_at": "2025-06-03T14:30:00Z",
+        "likes_count": 8
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440203",
+        "post_id": "550e8400-e29b-41d4-a716-446655440101",
+        "user_id": "550e8400-e29b-41d4-a716-446655440008",
+        "username": "Geneva_Healer",
+        "content": "Salut Laura! I had a Reiki session with Marie in Geneva; she’s certified and very intuitive. Expect a calming experience—bring an open mind!",
+        "created_at": "2025-06-03T10:00:00Z",
+        "likes_count": 12
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440204",
+        "post_id": "550e8400-e29b-41d4-a716-446655440101",
+        "user_id": "550e8400-e29b-41d4-a716-446655440009",
+        "username": "Sophie_Wellness",
+        "content": "Reiki is wonderful! I recommend checking Healing Path for certified practitioners in Geneva. My session helped with stress relief.",
+        "created_at": "2025-06-04T09:45:00Z",
+        "likes_count": 10
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440205",
+        "post_id": "550e8400-e29b-41d4-a716-446655440102",
+        "user_id": "550e8400-e29b-41d4-a716-446655440010",
+        "username": "Nature_Lover",
+        "content": "Sounds amazing! Can you share more details about the retreat? Is it suitable for beginners?",
+        "created_at": "2025-06-04T12:00:00Z",
+        "likes_count": 18
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440206",
+        "post_id": "550e8400-e29b-41d4-a716-446655440102",
+        "user_id": "550e8400-e29b-41d4-a716-446655440011",
+        "username": "Vaud_Yogi",
+        "content": "I’m interested! Please send me the pricing and location. Looking forward to it!",
+        "created_at": "2025-06-05T11:20:00Z",
+        "likes_count": 15
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440207",
+        "post_id": "550e8400-e29b-41d4-a716-446655440103",
+        "user_id": "550e8400-e29b-41d4-a716-446655440012",
+        "username": "Lausanne_Local",
+        "content": "Hi Emma! There’s a great yoga group at Lake Lausanne that meets every Saturday. Mostly expats, and classes are in English. DM me for details!",
+        "created_at": "2025-06-05T09:00:00Z",
+        "likes_count": 20
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440208",
+        "post_id": "550e8400-e29b-41d4-a716-446655440103",
+        "user_id": "550e8400-e29b-41d4-a716-446655440013",
+        "username": "Expat_James",
+        "content": "I feel you! Check out the Expat Wellness Club on Meetup. They do yoga and meditation events in Lausanne, super friendly!",
+        "created_at": "2025-06-05T14:00:00Z",
+        "likes_count": 15
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440209",
+        "post_id": "550e8400-e29b-41d4-a716-446655440103",
+        "user_id": "550e8400-e29b-41d4-a716-446655440014",
+        "username": "Mindful_Maria",
+        "content": "Welcome to Lausanne! Healing Path has a list of English-speaking yoga teachers. I found my favorite class through them!",
+        "created_at": "2025-06-06T10:00:00Z",
+        "likes_count": 12
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440210",
+        "post_id": "550e8400-e29b-41d4-a716-446655440104",
+        "user_id": "550e8400-e29b-41d4-a716-446655440015",
+        "username": "Qigong_Fan",
+        "content": "Hi Marc, I do 10-minute qigong sessions in the morning before work. There’s a great teacher in Zurich on Healing Path who offers quick online classes!",
+        "created_at": "2025-06-06T11:00:00Z",
+        "likes_count": 10
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440211",
+        "post_id": "550e8400-e29b-41d4-a716-446655440104",
+        "user_id": "550e8400-e29b-41d4-a716-446655440016",
+        "username": "Zen_Anna",
+        "content": "Try guided meditation apps like Calm for 5-minute sessions during lunch breaks. Also, check out evening yoga classes in District 1!",
+        "created_at": "2025-06-07T13:00:00Z",
+        "likes_count": 8
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440212",
+        "post_id": "550e8400-e29b-41d4-a716-446655440105",
+        "user_id": "550e8400-e29b-41d4-a716-446655440017",
+        "username": "Bern_Yogi",
+        "content": "Hatha is great for stress relief—slower pace, more focus on breathing. Try Yoga Bern; they offer both Hatha and Vinyasa in English!",
+        "created_at": "2025-06-07T09:00:00Z",
+        "likes_count": 15
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440213",
+        "post_id": "550e8400-e29b-41d4-a716-446655440105",
+        "user_id": "550e8400-e29b-41d4-a716-446655440018",
+        "username": "Stress_Reliever",
+        "content": "Vinyasa is more dynamic, which I find energizing for stress. Check out Studio Lotus in Bern; their English classes are fantastic.",
+        "created_at": "2025-06-07T14:30:00Z",
+        "likes_count": 12
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440214",
+        "post_id": "550e8400-e29b-41d4-a716-446655440105",
+        "user_id": "550e8400-e29b-41d4-a716-446655440019",
+        "username": "Mindful_Lisa",
+        "content": "I prefer Hatha for calming down after work. Yoga Bern’s evening classes are beginner-friendly and in English!",
+        "created_at": "2025-06-08T15:00:00Z",
+        "likes_count": 10
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440215",
+        "post_id": "550e8400-e29b-41d4-a716-446655440106",
+        "user_id": "550e8400-e29b-41d4-a716-446655440020",
+        "username": "Zurich_Meditator",
+        "content": "I love Headspace for 10-minute sessions. It’s perfect for busy days in Zurich. Also, try Insight Timer for free guided meditations!",
+        "created_at": "2025-06-08T08:00:00Z",
+        "likes_count": 8
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440216",
+        "post_id": "550e8400-e29b-41d4-a716-446655440106",
+        "user_id": "550e8400-e29b-41d4-a716-446655440021",
+        "username": "Calm_Seeker",
+        "content": "Calm has great 5-minute meditations for professionals. I use it during lunch breaks. Check out their sleep stories too!",
+        "created_at": "2025-06-09T10:30:00Z",
+        "likes_count": 7
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440217",
+        "post_id": "550e8400-e29b-41d4-a716-446655440107",
+        "user_id": "550e8400-e29b-41d4-a716-446655440022",
+        "username": "Basel_Sound",
+        "content": "I attended a sound healing session in Basel last month. It’s so relaxing—gongs and bowls create a deep calm. Check Healing Path for events!",
+        "created_at": "2025-06-09T10:00:00Z",
+        "likes_count": 15
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440218",
+        "post_id": "550e8400-e29b-41d4-a716-446655440107",
+        "user_id": "550e8400-e29b-41d4-a716-446655440023",
+        "username": "Vibration_Healer",
+        "content": "Sound healing is amazing! There’s a monthly workshop at Basel Wellness Hub. Highly recommend it for stress relief.",
+        "created_at": "2025-06-10T12:00:00Z",
+        "likes_count": 12
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440219",
+        "post_id": "550e8400-e29b-41d4-a716-446655440108",
+        "user_id": "550e8400-e29b-41d4-a716-446655440024",
+        "username": "Reiki_Student",
+        "content": "Reiki Level 1 is life-changing! I did mine with Claire in Geneva—she’s patient and knowledgeable. Worth every franc!",
+        "created_at": "2025-06-10T09:00:00Z",
+        "likes_count": 18
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440220",
+        "post_id": "550e8400-e29b-41d4-a716-446655440108",
+        "user_id": "550e8400-e29b-41d4-a716-446655440025",
+        "username": "Energy_Healer",
+        "content": "Look for a teacher with at least 5 years of experience. I recommend checking Healing Path for certified Reiki masters in Geneva.",
+        "created_at": "2025-06-10T14:00:00Z",
+        "likes_count": 15
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440221",
+        "post_id": "550e8400-e29b-41d4-a716-446655440108",
+        "user_id": "550e8400-e29b-41d4-a716-446655440026",
+        "username": "Geneva_Yogi",
+        "content": "I’m also considering Reiki Level 1. Thanks for the tips! Any advice on preparing for the course?",
+        "created_at": "2025-06-11T08:45:00Z",
+        "likes_count": 10
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440222",
+        "post_id": "550e8400-e29b-41d4-a716-446655440109",
+        "user_id": "550e8400-e29b-41d4-a716-446655440027",
+        "username": "Lucerne_Local",
+        "content": "Check out Lucerne Wellness Meetup! They host yoga and meditation events in English every month. Great for expats!",
+        "created_at": "2025-06-11T11:00:00Z",
+        "likes_count": 12
+      },
+      {
+        "id": "550e8400-e29b-41d4-a716-446655440223",
+        "post_id": "550e8400-e29b-41d4-a716-446655440109",
+        "user_id": "550e8400-e29b-41d4-a716-446655440028",
+        "username": "Expat_Liam",
+        "content": "I joined a yoga class in Lucerne through Healing Path. The teacher speaks English, and the group is super welcoming!",
+        "created_at": "2025-06-12T14:00:00Z",
+        "likes_count": 10
+      }
+    ]
+  }

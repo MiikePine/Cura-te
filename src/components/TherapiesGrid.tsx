@@ -24,7 +24,7 @@ export default function TherapiesGrid() {
   };
 
   return (
-    <section className="py-16 bg-[#F8F5F1] z-20">
+    <section className="py-16 bg-[#F8F5F1] z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Título fora do grid */}
         <h2 className="text-3xl font-bold text-[#4A6670] mb-10 text-center bg-gradient-to-r from-[#7C9A92] to-[#4A6670] bg-clip-text text-transparent">
