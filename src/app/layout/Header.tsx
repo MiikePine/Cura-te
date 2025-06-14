@@ -200,6 +200,12 @@ const Header: React.FC = () => {
                 <Link href="/register" className="flex items-center bg-[#E8DED1] text-[#4A6670] px-4 py-2 rounded-lg hover:bg-[#D9A066] hover:text-white transition-colors">
                   <PlusCircle className="h-5 w-5 mr-1" /> List Your Practice
                 </Link>
+                <Link href="/forum" className="flex items-center bg-[#E8DED1] text-[#4A6670] px-4 py-2 rounded-lg hover:bg-[#D9A066] hover:text-white transition-colors">
+                  Forum
+                  </Link>
+                  <Link href="/feed" className="flex items-center bg-[#E8DED1] text-[#4A6670] px-4 py-2 rounded-lg hover:bg-[#D9A066] hover:text-white transition-colors">
+                  Feed
+                  </Link>
               </>
             )}
           </div>
